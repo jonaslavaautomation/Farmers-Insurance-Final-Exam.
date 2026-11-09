@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LAVA Farmers Insurance Final Exam</title>
   <link rel="icon" type="image/png" href="images/favicon.png" />
+  <!-- EmailJS: sends the result email to every admin in RESULT_RECIPIENTS -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4.4.1/dist/email.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
@@ -333,7 +335,21 @@
     // Keep false to preserve the original rule: score and pass status stay hidden until the admin password is entered.
     const SHOW_SCORE_TO_TRAINEE = false;
 
-    const EMAILJS_CONFIG = { enabled: false, publicKey: '', serviceId: '', templateId: '' };
+    // ===== EmailJS setup: paste your 3 keys from emailjs.com below =====
+    const EMAILJS_CONFIG = {
+      enabled: true,
+      publicKey: '',   // Account > General > Public Key
+      serviceId: '',   // Email Services > your service > Service ID
+      templateId: ''   // Email Templates > your template > Template ID
+    };
+    // Everyone listed here receives the result email after every submission.
+    const RESULT_RECIPIENTS = [
+      'leo@lavaautomation.com',
+      'jonas@lavaautomation.com',
+      'au@lavaautomation.com',
+      'shandyl.s@lavaautomation.com'
+    ];
+    const EXAM_NAME = 'Farmers Insurance Training & Operations Final Exam';
     // Questions with an explicit `options` array use those curated choices (the answer is always included; order is shuffled per take).
     // Questions without `options` keep the original behavior: 3 random distractors from the shared answer pool.
     const OBJECTIVE_QUESTIONS = [
@@ -524,49 +540,68 @@
     async function ensureJsPDF(){ if(window.jspdf && window.jspdf.jsPDF) return true; const sources=['https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js','https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js','https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js']; for(const src of sources){ try{ await new Promise((resolve,reject)=>{ const s=document.createElement('script'); s.src=src; s.onload=resolve; s.onerror=reject; document.head.appendChild(s);}); if(window.jspdf && window.jspdf.jsPDF) return true; }catch(e){} } return false; }
     async function imageToDataUrl(src){ return new Promise((resolve,reject)=>{ const img=new Image(); img.crossOrigin='anonymous'; img.onload=()=>{ try{ const canvas=document.createElement('canvas'); canvas.width=img.naturalWidth; canvas.height=img.naturalHeight; canvas.getContext('2d').drawImage(img,0,0); resolve(canvas.toDataURL('image/png')); }catch(err){ reject(err); } }; img.onerror=reject; img.src=src; }); }
 
+    function buildEmailParams(result, wasAutoSubmitted){
+      const take=result.takeNumber, remaining=Math.max(0, MAX_TAKES-take), retakes=Math.max(0, take-1);
+      const totalItems=result.questionTotal + DRAG_ITEMS.length, totalCorrect=result.objectiveCorrect + result.dragCorrect;
+      const passed=result.passed;
+      let attemptLabel = take===1 ? 'First attempt' : `Retake #${retakes}`;
+      if(take===MAX_TAKES) attemptLabel += ' (final take)';
+      let nextStep;
+      if(passed) nextStep='Passed. The certificate is unlocked in Admin Review and can be downloaded with the admin password.';
+      else if(remaining>0) nextStep=`Did not reach ${PASSING_SCORE}%. The trainee can retake the exam: ${remaining} take${remaining===1?'':'s'} left.`;
+      else nextStep=`Did not reach ${PASSING_SCORE}% and all ${MAX_TAKES} takes are used. Trainer follow-up is needed.`;
+      return {
+        to_email: RESULT_RECIPIENTS.join(', '),
+        email_subject: `${passed?'PASSED':'FAILED'} | ${result.name} | ${result.percentage}% | Take ${take} of ${MAX_TAKES} | Farmers Final Exam`,
+        exam_name: EXAM_NAME,
+        candidate_name: result.name,
+        agency: result.agency || 'LAVA Training Batch',
+        trainer_name: result.trainer,
+        status: passed ? 'PASSED' : 'FAILED',
+        status_icon: passed ? '✅' : '❌',
+        status_color: passed ? '#15803d' : '#b91c1c',
+        status_bg: passed ? '#dcfce7' : '#fee2e2',
+        status_border: passed ? '#86efac' : '#fca5a5',
+        score: String(result.percentage),
+        passing_score: String(PASSING_SCORE),
+        total_correct: `${totalCorrect} / ${totalItems}`,
+        missed_total: String(totalItems - totalCorrect),
+        objective_correct: `${result.objectiveCorrect} / ${result.questionTotal}`,
+        drag_correct: `${result.dragCorrect} / ${DRAG_ITEMS.length}`,
+        take_number: String(take),
+        max_takes: String(MAX_TAKES),
+        attempt_label: attemptLabel,
+        retakes_used: String(retakes),
+        attempts_remaining: String(remaining),
+        next_step: nextStep,
+        time_used: formatTime(result.usedSeconds||0) + ' of ' + formatTime(EXAM_DURATION),
+        auto_submitted: wasAutoSubmitted ? 'Yes (time ran out)' : 'No',
+        submitted_at: result.submittedAt || new Date().toLocaleString(),
+        certificate_number: passed ? result.certificateNumber : 'Not issued (failed)'
+      };
+    }
     async function sendViaEmailJS(result, wasAutoSubmitted){
-      if(!EMAILJS_CONFIG.enabled || !EMAILJS_CONFIG.publicKey || !EMAILJS_CONFIG.serviceId || !EMAILJS_CONFIG.templateId || !window.emailjs) return {ok:false, reason:'emailjs-not-configured'};
+      if(!EMAILJS_CONFIG.enabled || !EMAILJS_CONFIG.publicKey || !EMAILJS_CONFIG.serviceId || !EMAILJS_CONFIG.templateId) return {ok:false, reason:'emailjs-not-configured'};
+      if(!window.emailjs) return {ok:false, reason:'emailjs-sdk-missing'};
       try{
         emailjs.init({ publicKey: EMAILJS_CONFIG.publicKey });
-        const params = {
-          email_subject: `LAVA Farmers Exam Result - ${result.name} - ${result.percentage}%`,
-          candidate_name: result.name,
-          agency: result.agency || 'LAVA Training Batch',
-          trainer_name: result.trainer,
-          score: String(result.percentage),
-          passed: result.passed ? 'Passed':'Failed',
-          objective_correct: `${result.objectiveCorrect}/${result.questionTotal}`,
-          drag_correct: `${result.dragCorrect}/${DRAG_ITEMS.length}`,
-          take_number: String(result.takeNumber),
-          certificate_number: result.certificateNumber,
-          submitted_at: new Date().toLocaleString(),
-          to_email: 'leo@lavaautomation.com, jonas@lavaautomation.com, au@lavaautomation.com, alchanie@lavaautomation.com'
-        };
-        await emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, params);
-        return {ok:true, mode:'emailjs'};
+        await emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, buildEmailParams(result, wasAutoSubmitted));
+        return {ok:true};
       }catch(error){ console.error('EmailJS error:', error); return {ok:false, reason:'emailjs-failed'}; }
     }
-    async function sendResultSubmission(result, wasAutoSubmitted){
-      const emailJsResult = await sendViaEmailJS(result, wasAutoSubmitted);
-      if(emailJsResult.ok) return emailJsResult;
+    // Netlify Forms keeps a backup copy of every result in the Netlify dashboard (Forms > farmers-exam-results).
+    async function sendViaNetlify(result, wasAutoSubmitted){
       const form=document.getElementById('netlifyExamForm'); if(!form) return {ok:false, reason:'missing-form'};
-      const usedSeconds=EXAM_DURATION - Math.max(0,state.secondsLeft);
-      const summary=[`Candidate: ${result.name}`,`Agency: ${result.agency || 'LAVA Training Batch'}`,`Trainer: ${result.trainer}`,`Score: ${result.percentage}%`,`Status: ${result.passed ? 'Passed':'Failed'}`,`Take Number: ${result.takeNumber}`,`Objective Score: ${result.objectiveCorrect}/${result.questionTotal}`,`Drag Score: ${result.dragCorrect}/${DRAG_ITEMS.length}`,`Certificate No: ${result.certificateNumber}`,`Auto Submitted: ${wasAutoSubmitted ? 'Yes':'No'}`,`Submitted At: ${new Date().toLocaleString()}`].join('\n');
-      form.querySelector('[name="subject"]').value=`LAVA Farmers Exam Result - ${result.name} - ${result.percentage}%`;
-      form.querySelector('[name="candidate_name"]').value=result.name;
-      form.querySelector('[name="agency"]').value=result.agency || 'LAVA Training Batch';
-      form.querySelector('[name="trainer_name"]').value=result.trainer;
-      form.querySelector('[name="score"]').value=String(result.percentage);
-      form.querySelector('[name="passed"]').value=result.passed ? 'Passed':'Failed';
-      form.querySelector('[name="objective_correct"]').value=`${result.objectiveCorrect}/${result.questionTotal}`;
-      form.querySelector('[name="drag_correct"]').value=`${result.dragCorrect}/${DRAG_ITEMS.length}`;
-      form.querySelector('[name="take_number"]').value=String(result.takeNumber);
-      form.querySelector('[name="certificate_number"]').value=result.certificateNumber;
-      form.querySelector('[name="submitted_at"]').value=new Date().toLocaleString();
-      form.querySelector('[name="duration_used"]').value=formatTime(usedSeconds);
-      form.querySelector('[name="result_summary"]').value=summary;
-      const formData=new FormData(form);
-      try{ const response = await fetch('/', { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body:new URLSearchParams(formData).toString() }); if(!response.ok) throw new Error('Submission failed'); return {ok:true, mode:'netlify'}; }catch(error){ console.error('Netlify form submission error:',error); return {ok:false, reason:'network'}; }
+      const p=buildEmailParams(result, wasAutoSubmitted);
+      const summary=[`Candidate: ${p.candidate_name}`,`Agency: ${p.agency}`,`Trainer: ${p.trainer_name}`,`Status: ${p.status}`,`Score: ${p.score}% (passing ${p.passing_score}%)`,`Take: ${p.take_number} of ${p.max_takes} (${p.attempt_label})`,`Retakes used: ${p.retakes_used}`,`Takes remaining: ${p.attempts_remaining}`,`Questions: ${p.objective_correct}`,`Drag items: ${p.drag_correct}`,`Time used: ${p.time_used}`,`Auto submitted: ${p.auto_submitted}`,`Certificate No: ${p.certificate_number}`,`Submitted at: ${p.submitted_at}`,`Next step: ${p.next_step}`].join('\n');
+      const set=(n,v)=>{ const f=form.querySelector(`[name="${n}"]`); if(f) f.value=v; };
+      set('subject', p.email_subject); set('candidate_name', p.candidate_name); set('agency', p.agency); set('trainer_name', p.trainer_name); set('score', p.score); set('passed', p.status); set('objective_correct', p.objective_correct); set('drag_correct', p.drag_correct); set('take_number', `${p.take_number} of ${p.max_takes}`); set('certificate_number', p.certificate_number); set('submitted_at', p.submitted_at); set('duration_used', p.time_used); set('result_summary', summary);
+      try{ const response = await fetch('/', { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body:new URLSearchParams(new FormData(form)).toString() }); if(!response.ok) throw new Error('Submission failed'); return {ok:true}; }catch(error){ console.error('Netlify form submission error:',error); return {ok:false, reason:'network'}; }
+    }
+    // Sends both: the EmailJS email to every admin, plus the Netlify backup record.
+    async function sendResultSubmission(result, wasAutoSubmitted){
+      const [emailjsRes, netlifyRes] = await Promise.all([sendViaEmailJS(result, wasAutoSubmitted), sendViaNetlify(result, wasAutoSubmitted)]);
+      return { ok: emailjsRes.ok || netlifyRes.ok, emailjs: emailjsRes.ok, netlify: netlifyRes.ok, reason: emailjsRes.reason };
     }
 
     function startExam(){ const name=el.candidateName.value.trim(); if(!name){ showMessage('Please enter the trainee name first.'); return; } const attempts=getAttemptsForName(name); if(attempts >= MAX_TAKES){ updateAttemptsUI(); showMessage('This trainee already used all 3 allowed takes for this browser.'); return; } if(state.orderConsumed){ prepareAttemptOrder(); state.answers={}; state.dragPlacements={}; state.dragHistory=[]; } const nextTake=attempts+1; setAttemptsForName(name, nextTake); state.orderConsumed=true; state.currentTake=nextTake; state.started=true; state.result=null; renderQuestions(); renderDrag(); renderProgress(); renderResult(); renderCertificate(null); updateAttemptsUI(); updateButtons(); startTimer(); showMessage(`Take ${nextTake} started. Remaining attempts after this take: ${MAX_TAKES - nextTake}.`); }
@@ -575,7 +610,7 @@
     function closeAdminModal(){ el.adminModal.classList.add('hidden'); }
     function unlockAdmin(){ const entered=el.adminPasswordInput.value; if(entered !== ADMIN_PASSWORD){ el.adminError.textContent='Incorrect admin password.'; el.adminError.classList.remove('hidden'); return; } state.adminUnlocked=true; closeAdminModal(); renderResult(); renderCertificate(state.result); updateButtons(); showMessage('Admin review unlocked.'); }
 
-    async function submitExam(isAuto=false){ if(state.result) return; if(!state.started){ showMessage('Please start the exam first.'); return; } const missingQuestions=state.questions.filter(q=>!state.answers[q.id]).length; const missingDrag=DRAG_ITEMS.filter(item=>!state.dragPlacements[item.id]).length; if(!isAuto && (missingQuestions > 0 || missingDrag > 0)){ showMessage(`Please finish all items first. Remaining: ${missingQuestions} question(s) and ${missingDrag} drag item(s).`); return; } clearTimer(); state.started=false; const objectiveCorrect=state.questions.filter(q=>state.answers[q.id]===q.answer).length; const dragCorrect=DRAG_ITEMS.filter(item=>state.dragPlacements[item.id]===item.answer).length; const totalCorrect=objectiveCorrect + dragCorrect; const totalItems=state.questions.length + DRAG_ITEMS.length; const percentage=Math.round((totalCorrect/totalItems)*100); const passed=percentage >= PASSING_SCORE; const name=el.candidateName.value.trim(); const agency=el.agencyName.value.trim(); const trainer=el.trainerName.value.trim() || 'LAVA Training Department'; const allQuestions=state.questions.map((q,idx)=>({...q,displayNumber:idx+1,userAnswer:state.answers[q.id] || ''})); const missedQuestions=allQuestions.filter(q=>q.userAnswer !== q.answer); const allDrag=state.dragOrder.map((item,idx)=>({...item,displayNumber:idx+1,userPlacement:state.dragPlacements[item.id] || ''})); const missedDrag=allDrag.filter(item=>item.userPlacement !== item.answer); state.result={name,agency,trainer,percentage,passed,objectiveCorrect,dragCorrect,takeNumber:state.currentTake,date:new Date().toLocaleDateString(),certificateNumber:'LAVA-FIO-'+Date.now().toString().slice(-8),submittedAt:new Date().toLocaleString(),usedSeconds:EXAM_DURATION-Math.max(0,state.secondsLeft),autoSubmitted:!!isAuto,answeredCount:answeredCount(),placedCount:placedCount(),questionTotal:state.questions.length,missedQuestions,missedDrag,allQuestions,allDrag}; state.adminUnlocked=false; renderQuestions(); renderDrag(); renderProgress(); renderResult(); renderCertificate(state.result); updateButtons(); updateAttemptsUI(); el.completionCard.scrollIntoView({behavior: reduceMotion.matches?'auto':'smooth', block:'start'}); const heading=document.getElementById('completionHeading'); if(heading) heading.focus({preventScroll:true}); const attempts=getAttemptsForName(name); const remaining=Math.max(0, MAX_TAKES - attempts); const emailResult=await sendResultSubmission(state.result, isAuto); const emailNote=emailResult.ok ? (emailResult.mode==='emailjs' ? ' A branded email was sent to the admin inboxes.' : ' A copy of the score was sent through the Netlify notification workflow.') : ' Email delivery will work after this file is deployed on Netlify with form detection and email notifications enabled, or after EmailJS is configured.'; showMessage((isAuto ? 'Time is up. The exam was auto-submitted.\n':'' ) + `Exam submitted successfully. Admin password is required to view the result, correct answers, and certificate. Remaining take(s): ${remaining}.` + emailNote); }
+    async function submitExam(isAuto=false){ if(state.result) return; if(!state.started){ showMessage('Please start the exam first.'); return; } const missingQuestions=state.questions.filter(q=>!state.answers[q.id]).length; const missingDrag=DRAG_ITEMS.filter(item=>!state.dragPlacements[item.id]).length; if(!isAuto && (missingQuestions > 0 || missingDrag > 0)){ showMessage(`Please finish all items first. Remaining: ${missingQuestions} question(s) and ${missingDrag} drag item(s).`); return; } clearTimer(); state.started=false; const objectiveCorrect=state.questions.filter(q=>state.answers[q.id]===q.answer).length; const dragCorrect=DRAG_ITEMS.filter(item=>state.dragPlacements[item.id]===item.answer).length; const totalCorrect=objectiveCorrect + dragCorrect; const totalItems=state.questions.length + DRAG_ITEMS.length; const percentage=Math.round((totalCorrect/totalItems)*100); const passed=percentage >= PASSING_SCORE; const name=el.candidateName.value.trim(); const agency=el.agencyName.value.trim(); const trainer=el.trainerName.value.trim() || 'LAVA Training Department'; const allQuestions=state.questions.map((q,idx)=>({...q,displayNumber:idx+1,userAnswer:state.answers[q.id] || ''})); const missedQuestions=allQuestions.filter(q=>q.userAnswer !== q.answer); const allDrag=state.dragOrder.map((item,idx)=>({...item,displayNumber:idx+1,userPlacement:state.dragPlacements[item.id] || ''})); const missedDrag=allDrag.filter(item=>item.userPlacement !== item.answer); state.result={name,agency,trainer,percentage,passed,objectiveCorrect,dragCorrect,takeNumber:state.currentTake,date:new Date().toLocaleDateString(),certificateNumber:'LAVA-FIO-'+Date.now().toString().slice(-8),submittedAt:new Date().toLocaleString(),usedSeconds:EXAM_DURATION-Math.max(0,state.secondsLeft),autoSubmitted:!!isAuto,answeredCount:answeredCount(),placedCount:placedCount(),questionTotal:state.questions.length,missedQuestions,missedDrag,allQuestions,allDrag}; state.adminUnlocked=false; renderQuestions(); renderDrag(); renderProgress(); renderResult(); renderCertificate(state.result); updateButtons(); updateAttemptsUI(); el.completionCard.scrollIntoView({behavior: reduceMotion.matches?'auto':'smooth', block:'start'}); const heading=document.getElementById('completionHeading'); if(heading) heading.focus({preventScroll:true}); const attempts=getAttemptsForName(name); const remaining=Math.max(0, MAX_TAKES - attempts); const emailResult=await sendResultSubmission(state.result, isAuto); const emailNote=emailResult.emailjs ? ' Your result was emailed to the training admins.' : (emailResult.netlify ? ' Your result was recorded for the training admins.' : ' The result could not be sent automatically. Please tell your trainer that you have submitted.'); showMessage((isAuto ? 'Time is up. The exam was auto-submitted.\n':'' ) + `Exam submitted successfully. Admin password is required to view the result, correct answers, and certificate. Remaining take(s): ${remaining}.` + emailNote); }
 
     async function downloadCertificate(result){ if(!result) return; const loaded=await ensureJsPDF(); if(!loaded){ showMessage('PDF library could not be loaded. Please check your internet connection or deploy the file on Netlify. The certificate preview still works.'); return; } try{ const { jsPDF } = window.jspdf; const doc=new jsPDF({orientation:'landscape', unit:'pt', format:'a4'}); const w=doc.internal.pageSize.getWidth(); const h=doc.internal.pageSize.getHeight(); let bgData=null, logoData=null; try{ bgData=await imageToDataUrl('images/certificate-bg.png'); }catch(e){} try{ logoData=await imageToDataUrl('images/logo.png'); }catch(e){}
       if(bgData){ doc.addImage(bgData,'PNG',0,0,w,h); } else { doc.setFillColor(244,240,231); doc.rect(0,0,w,h,'F'); }

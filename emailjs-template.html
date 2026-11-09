@@ -1,0 +1,110 @@
+<!-- Paste this whole file into EmailJS > Email Templates > Content (use the code / "<>" editor). -->
+<div style="margin:0;padding:24px 12px;background:#f4f1ec;font-family:Arial,Helvetica,sans-serif;color:#1f1f1f;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:620px;margin:0 auto;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e7e1d8;">
+
+    <!-- Header -->
+    <tr>
+      <td bgcolor="#3a0a0f" style="background:#3a0a0f;background-image:linear-gradient(135deg,#1a0507 0%,#43080f 60%,#7a1d0a 100%);padding:26px 28px;">
+        <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#ffb347;font-weight:bold;">LAVA Training Exam Portal</div>
+        <div style="font-size:22px;line-height:1.3;color:#ffffff;font-weight:bold;margin-top:6px;">{{exam_name}}</div>
+        <div style="font-size:13px;color:#f7dcdc;margin-top:6px;">New exam submission &middot; {{submitted_at}}</div>
+      </td>
+    </tr>
+    <tr><td style="height:4px;background:#ff7a00;background-image:linear-gradient(90deg,#ff7a00,#ef4444);font-size:0;line-height:0;">&nbsp;</td></tr>
+
+    <!-- Status banner -->
+    <tr>
+      <td style="padding:24px 28px 8px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:{{status_bg}};border:2px solid {{status_border}};border-radius:14px;">
+          <tr>
+            <td style="padding:18px 20px;" valign="middle">
+              <div style="font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:{{status_color}};font-weight:bold;">Result</div>
+              <div style="font-size:30px;font-weight:bold;color:{{status_color}};margin-top:2px;">{{status_icon}} {{status}}</div>
+              <div style="font-size:14px;color:#333333;margin-top:4px;"><strong>{{candidate_name}}</strong> &middot; {{agency}}</div>
+            </td>
+            <td align="right" valign="middle" style="padding:18px 20px;">
+              <div style="font-size:40px;font-weight:bold;color:{{status_color}};line-height:1;">{{score}}%</div>
+              <div style="font-size:12px;color:#555555;margin-top:6px;">Passing: {{passing_score}}%</div>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+
+    <!-- Attempts -->
+    <tr>
+      <td style="padding:16px 28px 4px;">
+        <div style="font-size:13px;letter-spacing:1.5px;text-transform:uppercase;color:#7b1d1d;font-weight:bold;margin-bottom:10px;">Attempts</div>
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+          <tr>
+            <td width="33%" style="padding:0 6px 0 0;">
+              <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:12px;padding:14px;text-align:center;">
+                <div style="font-size:11px;color:#9a3412;text-transform:uppercase;letter-spacing:1px;font-weight:bold;">This take</div>
+                <div style="font-size:26px;font-weight:bold;color:#1f1f1f;margin-top:4px;">{{take_number}} <span style="font-size:14px;color:#777777;">of {{max_takes}}</span></div>
+              </div>
+            </td>
+            <td width="33%" style="padding:0 3px;">
+              <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:12px;padding:14px;text-align:center;">
+                <div style="font-size:11px;color:#9a3412;text-transform:uppercase;letter-spacing:1px;font-weight:bold;">Retakes used</div>
+                <div style="font-size:26px;font-weight:bold;color:#1f1f1f;margin-top:4px;">{{retakes_used}}</div>
+              </div>
+            </td>
+            <td width="33%" style="padding:0 0 0 6px;">
+              <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:12px;padding:14px;text-align:center;">
+                <div style="font-size:11px;color:#9a3412;text-transform:uppercase;letter-spacing:1px;font-weight:bold;">Takes left</div>
+                <div style="font-size:26px;font-weight:bold;color:#1f1f1f;margin-top:4px;">{{attempts_remaining}}</div>
+              </div>
+            </td>
+          </tr>
+        </table>
+        <div style="font-size:13px;color:#555555;margin-top:8px;">{{attempt_label}}</div>
+      </td>
+    </tr>
+
+    <!-- Next step -->
+    <tr>
+      <td style="padding:16px 28px 4px;">
+        <div style="background:#faf7f2;border-left:4px solid {{status_color}};border-radius:8px;padding:14px 16px;font-size:14px;line-height:1.55;color:#2b2b2b;">
+          <strong style="color:{{status_color}};">Next step:</strong> {{next_step}}
+        </div>
+      </td>
+    </tr>
+
+    <!-- Score breakdown -->
+    <tr>
+      <td style="padding:20px 28px 4px;">
+        <div style="font-size:13px;letter-spacing:1.5px;text-transform:uppercase;color:#7b1d1d;font-weight:bold;margin-bottom:10px;">Score breakdown</div>
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size:14px;border:1px solid #eee7dd;border-radius:12px;overflow:hidden;">
+          <tr><td style="padding:11px 14px;background:#faf7f2;color:#555555;">Total correct</td><td align="right" style="padding:11px 14px;background:#faf7f2;font-weight:bold;">{{total_correct}}</td></tr>
+          <tr><td style="padding:11px 14px;border-top:1px solid #eee7dd;color:#555555;">Questions (multiple choice, true/false, acronyms)</td><td align="right" style="padding:11px 14px;border-top:1px solid #eee7dd;font-weight:bold;">{{objective_correct}}</td></tr>
+          <tr><td style="padding:11px 14px;border-top:1px solid #eee7dd;color:#555555;">Drag and drop (Home vs Auto)</td><td align="right" style="padding:11px 14px;border-top:1px solid #eee7dd;font-weight:bold;">{{drag_correct}}</td></tr>
+          <tr><td style="padding:11px 14px;border-top:1px solid #eee7dd;color:#555555;">Items missed</td><td align="right" style="padding:11px 14px;border-top:1px solid #eee7dd;font-weight:bold;">{{missed_total}}</td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <!-- Exam details -->
+    <tr>
+      <td style="padding:20px 28px 8px;">
+        <div style="font-size:13px;letter-spacing:1.5px;text-transform:uppercase;color:#7b1d1d;font-weight:bold;margin-bottom:10px;">Exam details</div>
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size:14px;border:1px solid #eee7dd;border-radius:12px;overflow:hidden;">
+          <tr><td style="padding:11px 14px;background:#faf7f2;color:#555555;">Trainee</td><td align="right" style="padding:11px 14px;background:#faf7f2;font-weight:bold;">{{candidate_name}}</td></tr>
+          <tr><td style="padding:11px 14px;border-top:1px solid #eee7dd;color:#555555;">Agency / Team</td><td align="right" style="padding:11px 14px;border-top:1px solid #eee7dd;font-weight:bold;">{{agency}}</td></tr>
+          <tr><td style="padding:11px 14px;border-top:1px solid #eee7dd;color:#555555;">Trainer</td><td align="right" style="padding:11px 14px;border-top:1px solid #eee7dd;font-weight:bold;">{{trainer_name}}</td></tr>
+          <tr><td style="padding:11px 14px;border-top:1px solid #eee7dd;color:#555555;">Time used</td><td align="right" style="padding:11px 14px;border-top:1px solid #eee7dd;font-weight:bold;">{{time_used}}</td></tr>
+          <tr><td style="padding:11px 14px;border-top:1px solid #eee7dd;color:#555555;">Auto-submitted</td><td align="right" style="padding:11px 14px;border-top:1px solid #eee7dd;font-weight:bold;">{{auto_submitted}}</td></tr>
+          <tr><td style="padding:11px 14px;border-top:1px solid #eee7dd;color:#555555;">Certificate No.</td><td align="right" style="padding:11px 14px;border-top:1px solid #eee7dd;font-weight:bold;">{{certificate_number}}</td></tr>
+          <tr><td style="padding:11px 14px;border-top:1px solid #eee7dd;color:#555555;">Submitted at</td><td align="right" style="padding:11px 14px;border-top:1px solid #eee7dd;font-weight:bold;">{{submitted_at}}</td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <!-- Footer -->
+    <tr>
+      <td style="padding:18px 28px 24px;font-size:12px;line-height:1.6;color:#8a8a8a;text-align:center;">
+        Sent automatically by the LAVA Farmers Final Exam portal.<br>
+        Full answer review is available in the exam portal under <strong>Admin Review</strong>.
+      </td>
+    </tr>
+  </table>
+</div>
