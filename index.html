@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LAVA Farmers Insurance Final Exam</title>
+  <link rel="icon" type="image/png" href="images/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg1:#090909;--bg2:#1a0507;--bg3:#43080f;--red:#ef4444;--red2:#ff5b5b;--orange:#ff7a00;--gold:#ffb347;
+      --text:#fff;--muted:#f7dcdc;--line:rgba(255,255,255,.12);--card:rgba(255,255,255,.07);--card2:rgba(255,255,255,.05);
+    }
+    *{box-sizing:border-box} html,body{margin:0;padding:0} body{font-family:Arial,Helvetica,sans-serif;color:var(--text);min-height:100vh;
+      background:radial-gradient(circle at 8% 10%,rgba(255,110,0,.18),transparent 18%),radial-gradient(circle at 92% 12%,rgba(239,68,68,.18),transparent 22%),radial-gradient(circle at 50% 100%,rgba(255,150,50,.12),transparent 24%),linear-gradient(135deg,var(--bg1) 0%,var(--bg2) 35%,var(--bg3) 70%,#0c0c0c 100%);
+      overflow-x:hidden;position:relative}
+    body:before,body:after{content:"";position:fixed;width:420px;height:420px;border-radius:50%;pointer-events:none;filter:blur(90px);opacity:.20;z-index:0}
+    body:before{top:-80px;left:-120px;background:#ff4d00} body:after{bottom:-90px;right:-100px;background:#dc2626}
+    .vector-overlay{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.28;background-image:linear-gradient(120deg,transparent 0 45%,rgba(255,255,255,.04) 45% 46%,transparent 46% 100%),linear-gradient(160deg,transparent 0 58%,rgba(255,255,255,.03) 58% 59%,transparent 59% 100%),linear-gradient(20deg,transparent 0 70%,rgba(255,255,255,.025) 70% 71%,transparent 71% 100%)}
+    @keyframes floatGlow{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-20px) scale(1.05)}}
+    .page{position:relative;z-index:1;width:min(1280px,calc(100% - 28px));margin:22px auto 40px}
+    .hero-grid,.drag-grid,.review-grid,.stats-grid,.answer-key-grid{display:grid;gap:18px}.hero-grid{grid-template-columns:1.28fr .72fr}.drag-grid{grid-template-columns:.92fr 1.08fr}.review-grid,.answer-key-grid{grid-template-columns:1fr 1fr}.stats-grid{grid-template-columns:repeat(4,1fr)}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,.085),rgba(255,255,255,.055));border:1px solid var(--line);border-radius:28px;padding:22px;box-shadow:0 18px 40px rgba(0,0,0,.35);backdrop-filter:blur(10px)}
+    .brand-row{display:flex;align-items:center;gap:16px;margin-bottom:16px}.logo-wrap{width:88px;height:88px;border-radius:24px;display:grid;place-items:center;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);overflow:hidden;flex:0 0 auto}.logo-wrap img{width:72px;height:72px;object-fit:contain}.badge{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:rgba(255,122,0,.18);border:1px solid rgba(255,177,71,.24);color:#ffe1c0;font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-bottom:12px}
+    h1,h2,h3,h4,p{margin-top:0}.hero-title{font-size:clamp(30px,4.4vw,42px);line-height:1.06;margin-bottom:10px;font-weight:900}.muted{color:var(--muted);line-height:1.65}.field{margin-bottom:14px}label{display:block;font-size:14px;margin-bottom:8px;color:#ffe4d0;font-weight:700}
+    input,select,button{font:inherit} input,select{width:100%;padding:14px 16px;border-radius:16px;background:rgba(0,0,0,.22);border:1px solid rgba(255,255,255,.14);color:#fff;outline:none} input::placeholder{color:#d3b2b2} select option{color:#111}
+    .stats-grid .mini-card{background:rgba(0,0,0,.22);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:16px}.mini-label{font-size:12px;color:#f1caca}.mini-value{font-size:28px;font-weight:900;margin-top:8px;color:#fff3ea}
+    .timer-box{margin-top:14px;padding:18px;border-radius:22px;background:linear-gradient(135deg,rgba(255,122,0,.16),rgba(239,68,68,.14));border:1px solid rgba(255,255,255,.1)}.timer-value{font-size:36px;font-weight:900;letter-spacing:1px;margin-bottom:8px}.timer-warning{color:#fecaca}
+    .progress-row{display:flex;gap:16px;justify-content:space-between;align-items:center;flex-wrap:wrap}.progress-track{flex:1;min-width:240px;height:12px;border-radius:999px;overflow:hidden;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.08)}.progress-fill{height:100%;background:linear-gradient(90deg,var(--orange),var(--red2));width:0;transition:width .25s ease}
+    .question-card{margin-top:14px;border-radius:20px;padding:18px;background:rgba(0,0,0,.20);border:1px solid rgba(255,255,255,.08)}.question-number{display:inline-flex;padding:7px 10px;border-radius:999px;background:rgba(255,122,0,.14);border:1px solid rgba(255,177,71,.18);color:#ffd1ac;font-size:12px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;margin-bottom:12px}
+    .actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:12px}.btn{border:0;border-radius:16px;padding:14px 18px;font-weight:900;cursor:pointer;transition:transform .16s ease,opacity .16s ease}.btn:hover{transform:translateY(-1px)}.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}.btn-primary{color:#fff;background:linear-gradient(90deg,var(--orange),var(--red))}.btn-secondary{color:#fff;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12)}.btn-success{color:#fff;background:linear-gradient(90deg,#16a34a,#22c55e)}.btn-danger{color:#fff;background:linear-gradient(90deg,#b91c1c,#ef4444)}
+    .message{margin-top:14px;padding:14px 16px;border-radius:16px;background:rgba(255,177,71,.12);border:1px solid rgba(255,177,71,.24);color:#ffe0ac;white-space:pre-wrap}
+    .drag-side{display:flex;flex-direction:column;justify-content:space-between;min-height:360px}.drag-chip{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:8px 12px;background:rgba(255,122,0,.14);border:1px solid rgba(255,177,71,.18);color:#ffd7bb;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px}
+    .drag-card{padding:26px;text-align:center;font-size:24px;font-weight:900;border-radius:26px;background:linear-gradient(135deg,rgba(255,122,0,.22),rgba(239,68,68,.22));border:1px solid rgba(255,255,255,.12);box-shadow:0 14px 32px rgba(0,0,0,.24);user-select:none;cursor:grab;animation:popIn .3s ease;margin-top:16px;touch-action:none;outline-offset:4px;transition:box-shadow .18s ease,opacity .18s ease}.drag-card:active{cursor:grabbing}@keyframes popIn{from{transform:scale(.94);opacity:0}to{transform:scale(1);opacity:1}}@keyframes floatCard{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+    .drop-zones{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}.drop-zone{min-height:310px;border-radius:26px;padding:22px;background:rgba(0,0,0,.18);border:2px dashed rgba(255,255,255,.12);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;position:relative;overflow:hidden}.drop-zone:before{content:"";position:absolute;inset:-35%;background:radial-gradient(circle,rgba(255,140,0,.18),transparent 42%);opacity:0;transition:opacity .25s ease}.drop-zone:hover,.drop-zone.active{transform:translateY(-2px);border-color:rgba(255,177,71,.34);box-shadow:0 14px 32px rgba(0,0,0,.22)}.drop-zone:hover:before,.drop-zone.active:before{opacity:1}.drop-zone.flash-home{box-shadow:0 0 0 16px rgba(255,140,0,.10)}.drop-zone.flash-auto{box-shadow:0 0 0 16px rgba(239,68,68,.10)}.zone-icon{width:88px;height:88px;display:grid;place-items:center;border-radius:50%;font-size:40px;background:linear-gradient(135deg,rgba(255,122,0,.25),rgba(239,68,68,.20));border:1px solid rgba(255,255,255,.12);margin-bottom:14px;position:relative;z-index:1}.zone-title,.zone-text,.zone-pill{position:relative;z-index:1}.zone-title{font-size:24px;font-weight:900;margin-bottom:8px}.zone-text{color:var(--muted);line-height:1.6}.zone-pill{margin-top:14px;border-radius:999px;padding:8px 14px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.10);font-size:13px;font-weight:800;color:#ffe7d4}
+    .result-badge{display:inline-flex;align-items:center;padding:10px 16px;border-radius:999px;font-weight:900;margin-bottom:16px}.result-pass{background:rgba(34,197,94,.14);color:#b8f7cf}.result-fail{background:rgba(239,68,68,.14);color:#fecaca}.review-item{margin-top:12px;padding:14px;border-radius:16px;background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.08)}
+    .certificate{background:#f4f0e7;color:#111;border-radius:18px;padding:0;border:1px solid rgba(17,17,17,.18);box-shadow:0 18px 40px rgba(0,0,0,.24);overflow:hidden}
+    .certificate-inner{position:relative;min-height:760px;padding:40px 36px 110px;text-align:center;background:linear-gradient(rgba(255,255,255,.80),rgba(255,255,255,.82)),url('images/certificate-bg.png') center/cover no-repeat;background-blend-mode:screen;overflow:hidden}
+    .certificate-inner:before{content:"";position:absolute;inset:18px;border:2px solid rgba(107,33,33,.45);pointer-events:none;border-radius:8px}
+    .certificate-inner:after{content:"";position:absolute;inset:34px;border:1px solid rgba(107,33,33,.28);pointer-events:none;border-radius:4px}
+    .cert-logo{position:relative;z-index:2;width:88px;height:88px;object-fit:contain;margin:0 auto 18px;filter:drop-shadow(0 4px 10px rgba(0,0,0,.12))}
+    .cert-small{position:relative;z-index:2;font-family:'Cinzel',serif;font-size:13px;letter-spacing:4px;text-transform:uppercase;color:#7b1d1d;font-weight:700}
+    .cert-title{position:relative;z-index:2;font-family:'Cinzel',serif;font-size:clamp(34px,4vw,54px);line-height:1.15;font-weight:800;color:#111;margin:14px 0 10px}
+    .cert-subtitle{position:relative;z-index:2;font-family:'Cormorant Garamond',serif;font-size:clamp(18px,2vw,28px);font-weight:700;color:#7b1d1d;letter-spacing:1px;margin-bottom:26px}
+    .cert-presented{position:relative;z-index:2;margin-top:18px;font-family:'Cinzel',serif;font-size:13px;letter-spacing:3px;text-transform:uppercase;color:#7b1d1d}
+    .cert-name{position:relative;z-index:2;margin-top:28px;font-size:clamp(28px,4vw,52px);font-weight:800;font-family:'Cormorant Garamond',serif;color:#171717;letter-spacing:1px;text-transform:uppercase}
+    .cert-name-rule{position:relative;z-index:2;width:min(630px,84%);margin:10px auto 0;border-top:2px solid #2e2e2e}
+    .cert-body{position:relative;z-index:2;max-width:760px;margin:28px auto 0;font-size:20px;line-height:1.7;color:#5a1010;font-family:'Cormorant Garamond',serif;font-weight:600}
+    .cert-meta-row{position:relative;z-index:2;display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:24px}.cert-pill{padding:10px 14px;border-radius:999px;background:rgba(255,255,255,.76);border:1px solid rgba(125,17,17,.15);font-size:12px;font-weight:800;letter-spacing:.8px;color:#4b1010;text-transform:uppercase;font-family:'Cinzel',serif}.cert-pill span{display:block;margin-top:4px;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#111;text-transform:none;letter-spacing:0}
+    .cert-signatures{position:relative;z-index:2;display:flex;justify-content:center;margin-top:70px;padding:0 24px}.cert-sign{text-align:center;font-family:'Cinzel',serif;color:#7b1111;max-width:420px;width:100%}.cert-sign .line{width:min(100%,280px);border-top:2px solid #333;margin:0 auto 10px}.cert-sign-name{font-size:20px;font-weight:800;letter-spacing:1px;text-transform:uppercase}.cert-sign-title{margin-top:4px;font-size:13px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+    .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.62);backdrop-filter:blur(6px);display:grid;place-items:center;z-index:50;padding:16px}.modal-card{width:min(460px,100%);background:linear-gradient(180deg,rgba(30,8,8,.98),rgba(22,8,8,.96));border:1px solid rgba(255,255,255,.10);border-radius:24px;padding:22px;box-shadow:0 20px 40px rgba(0,0,0,.35)}
+    .status-correct{color:#86efac;font-weight:700}.status-wrong{color:#fca5a5;font-weight:700}.hidden{display:none!important}
+    /* ===== Sticky exam bar (Step 1) ===== */
+    .sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+    html.exam-live{scroll-padding-top:calc(var(--bar-h,72px) + 12px)}
+    .exam-bar{position:sticky;top:0;z-index:40;background:linear-gradient(180deg,rgba(26,6,8,.97),rgba(34,8,10,.95));border-bottom:1px solid rgba(255,177,71,.22);box-shadow:0 10px 26px rgba(0,0,0,.45);backdrop-filter:blur(10px)}
+    .exam-bar-inner{width:min(1280px,calc(100% - 28px));margin:0 auto;padding:10px 0;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+    .exam-bar-brand{display:flex;align-items:center;gap:10px;min-width:0}.exam-bar-brand img{width:34px;height:34px;object-fit:contain;flex:0 0 auto}
+    .exam-bar-title{font-weight:900;font-size:15px;line-height:1.2;white-space:nowrap}.exam-bar-sub{font-size:12px;color:#f1caca}
+    .exam-bar-timer{display:flex;align-items:baseline;gap:8px;padding:6px 14px;border-radius:14px;background:rgba(0,0,0,.30);border:1px solid rgba(255,255,255,.14);transition:background-color .3s ease,border-color .3s ease}
+    .exam-bar-timer-label{font-size:12px;color:#f1caca;font-weight:700}
+    .exam-bar-time{font-size:26px;font-weight:900;font-variant-numeric:tabular-nums;letter-spacing:1px;color:#fff3ea;min-width:4.2ch;text-align:center}
+    .exam-bar.is-warning .exam-bar-timer{background:rgba(255,159,28,.20);border-color:rgba(255,190,90,.65)}.exam-bar.is-warning .exam-bar-time{color:#ffd28a}
+    .exam-bar.is-critical .exam-bar-timer{background:rgba(220,38,38,.38);border-color:#ff8a8a;animation:timerPulse 1s ease-in-out infinite}.exam-bar.is-critical .exam-bar-time{color:#fff}
+    @keyframes timerPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,90,90,.55)}50%{box-shadow:0 0 0 7px rgba(255,90,90,0)}}
+    .exam-bar-progress{display:flex;align-items:center;gap:10px;flex:1;min-width:220px}
+    .bar-stats{display:flex;gap:12px;font-size:12px;color:#f1caca;white-space:nowrap}.bar-stats strong{color:#fff3ea;font-variant-numeric:tabular-nums}
+    .mini-track{flex:1;min-width:60px;height:8px;border-radius:999px;background:rgba(255,255,255,.10);overflow:hidden}.mini-track>div{height:100%;width:0;background:linear-gradient(90deg,var(--orange),var(--red2));transition:width .25s ease}
+    .bar-pct{font-variant-numeric:tabular-nums;min-width:3.5ch;text-align:right}
+    .timer-value.timer-critical{color:#ff8a8a}
+    @media (max-width:760px){.exam-bar-inner{gap:8px 12px;padding:8px 0}.exam-bar-brand .exam-bar-title{font-size:13px}.exam-bar-brand img{width:28px;height:28px}.exam-bar-time{font-size:22px}.exam-bar-timer{margin-left:auto;padding:4px 10px}}
+    @media (max-width:420px){.exam-bar-timer-label{display:none}.bar-stats{gap:8px;font-size:11px}}
+    /* ===== Engagement + polish (Step 4) ===== */
+    .exam-bar-nav{display:flex;gap:6px;flex-wrap:wrap}.lbl-short{display:none}
+    @media (hover:none){.drag-hint{display:none}}
+    .bar-link{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:#fff3ea;border-radius:10px;padding:7px 11px;font-size:13px;font-weight:800;cursor:pointer;transition:background-color .15s ease,border-color .15s ease}
+    .bar-link:hover{background:rgba(255,122,0,.18);border-color:rgba(255,177,71,.4)}.bar-link-primary{background:linear-gradient(90deg,var(--orange),var(--red));border-color:transparent}
+    :where(button,input,select,[tabindex]):focus-visible{outline:3px solid #ffb347;outline-offset:2px}
+    .btn:active:not(:disabled){transform:translateY(0) scale(.98)}
+    .btn-primary:hover:not(:disabled){box-shadow:0 8px 20px rgba(239,68,68,.35)}
+    select{appearance:none;-webkit-appearance:none;padding-right:44px;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1l6 6 6-6' stroke='%23ffb347' stroke-width='2' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;transition:border-color .15s ease,background-color .15s ease}
+    select:disabled{cursor:not-allowed;opacity:.6} select:hover:not(:disabled){border-color:rgba(255,177,71,.45)}
+    .question-card p{font-size:16px;line-height:1.55;margin-bottom:12px}
+    .question-card{transition:border-color .2s ease}
+    .question-card.is-answered{border-color:rgba(255,177,71,.30)}.question-card.is-answered select{border-color:rgba(255,177,71,.40);background-color:rgba(255,122,0,.07)}
+    .question-card.is-answered .question-number:after{content:"\2713";margin-left:6px;color:#ffd28a}
+    .question-card.is-target{border-color:#ffb347;box-shadow:0 0 0 3px rgba(255,177,71,.25)}
+    .section-card{border-top:3px solid transparent}
+    .section-card.part-questions{border-top-color:rgba(255,122,0,.75)}.section-card.part-drag{border-top-color:rgba(239,68,68,.80)}
+    .section-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}.section-head h2{margin-bottom:6px}
+    .section-part{display:inline-block;font-size:13px;font-weight:800;color:#ffd1ac;margin-bottom:6px}
+    .section-count{padding:8px 12px;border-radius:12px;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.10);font-size:14px;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
+    .section-count.is-done{border-color:rgba(134,239,172,.45);color:#b8f7cf}
+    .prestart-note{margin:4px 0 6px;padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.05);border:1px dashed rgba(255,177,71,.35);color:#ffe0ac}
+    .dash-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+    .dash-stat{background:rgba(0,0,0,.22);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:12px 14px}.dash-stat .mini-value{font-size:24px;margin-top:4px;font-variant-numeric:tabular-nums}
+    .drag-card.is-idle{opacity:.65;cursor:not-allowed}
+    .drag-card:focus-visible{box-shadow:0 0 0 4px rgba(255,177,71,.55),0 14px 32px rgba(0,0,0,.24)}
+    .drag-card.dragging{opacity:.75;box-shadow:0 0 0 3px #ffb347,0 20px 40px rgba(0,0,0,.4)}
+    .drag-card.touch-dragging{position:relative;z-index:30;transition:none;opacity:.92}
+    .drag-card-count{display:block;font-size:12px;font-weight:700;color:#ffd1ac;margin-bottom:8px;letter-spacing:.3px}
+    .drag-hint{font-size:13px;color:#f1caca;margin:10px 0 0}
+    .drag-last{min-height:1.4em;margin:12px 0 0;font-size:14px;color:#ffe0ac}
+    .drop-zone{cursor:pointer}
+    .drop-zone[aria-disabled="true"]{cursor:default}
+    .drop-zone.over{border-style:solid;border-color:#ffb347;background:rgba(255,122,0,.12);transform:translateY(-3px) scale(1.01)}
+    .drop-zone.received{animation:zoneReceive .45s ease}
+    @keyframes zoneReceive{0%{transform:scale(1)}40%{transform:scale(1.025)}100%{transform:scale(1)}}
+    .completion-card{border-top:3px solid rgba(255,177,71,.8)}
+    .completion-card h2:focus{outline:none}
+    .completion-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px}
+    .completion-note{margin-top:14px;padding:12px 14px;border-radius:14px;background:rgba(0,0,0,.22);border:1px solid rgba(255,255,255,.08);color:var(--muted);line-height:1.6}
+    .score-threshold{position:relative;height:12px;border-radius:999px;background:rgba(255,255,255,.09);overflow:visible;margin:34px 0 6px}.score-threshold-label{position:absolute;bottom:20px;transform:translateX(-50%);font-size:12px;font-weight:800;color:#fff3ea;white-space:nowrap}
+    .score-threshold-fill{height:100%;border-radius:999px}.score-threshold-mark{position:absolute;top:-6px;bottom:-6px;width:2px;background:#fff3ea}
+    .score-threshold-legend{display:flex;justify-content:space-between;font-size:12px;color:#f1caca}
+    @media (max-width:760px){
+      .exam-bar-brand>div{display:none}
+      .exam-bar-progress{flex-basis:auto;order:0;flex:1;min-width:0}
+      .mini-track{position:absolute;left:0;right:0;bottom:0;height:3px;border-radius:0;background:rgba(255,255,255,.06)}
+      .bar-pct{display:none}
+      .exam-bar-nav{flex-basis:100%;order:4;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+      .exam-bar-nav::-webkit-scrollbar{display:none}
+      .bar-link{white-space:nowrap;padding:6px 10px;font-size:12px;flex:1 1 auto}.lbl-long{display:none}.lbl-short{display:inline}
+      .dash-grid{grid-template-columns:1fr 1fr}.dash-grid .dash-stat:last-child{grid-column:1/-1}
+      .completion-grid{grid-template-columns:1fr 1fr}
+    }
+    @media (prefers-reduced-motion:reduce){
+      *,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+      .exam-bar.is-critical .exam-bar-timer{animation:none;box-shadow:0 0 0 3px rgba(255,90,90,.6)}
+    }
+    @media (max-width:980px){.hero-grid,.drag-grid,.review-grid,.answer-key-grid,.drop-zones{grid-template-columns:1fr}.stats-grid{grid-template-columns:repeat(2,1fr);gap:12px}.stats-grid .mini-value{font-size:22px}.page{width:min(100% - 18px,1280px)}.hero-title{font-size:30px}.drop-zone{min-height:250px}.certificate-inner{padding:28px 16px 90px}.cert-body{font-size:18px}}
+  </style>
+</head>
+<body>
+  <div class="vector-overlay"></div>
+  <header id="examBar" class="exam-bar hidden" aria-label="Exam status">
+    <div class="exam-bar-inner">
+      <div class="exam-bar-brand">
+        <img src="images/logo.png" alt="" />
+        <div><div class="exam-bar-title">Farmers Insurance Final Exam</div><div class="exam-bar-sub">Take <span id="barTake">-</span> of 3</div></div>
+      </div>
+      <div class="exam-bar-timer" role="timer" aria-atomic="true"><span class="exam-bar-timer-label">Time left</span><span id="barTimer" class="exam-bar-time">30:00</span></div>
+      <div class="exam-bar-progress" aria-label="Exam progress">
+        <div class="bar-stats"><span>Questions <strong id="barQ">0/80</strong></span><span>Drag items <strong id="barD">0/10</strong></span></div>
+        <div class="mini-track" aria-hidden="true"><div id="barFill"></div></div>
+        <strong id="barPct" class="bar-pct">0%</strong>
+      </div>
+      <nav class="exam-bar-nav" aria-label="Exam sections">
+        <button type="button" class="bar-link" data-jump="sectionQuestions">Questions</button>
+        <button type="button" class="bar-link" data-jump="sectionDrag"><span class="lbl-long">Drag and drop</span><span class="lbl-short">Drag</span></button>
+        <button type="button" class="bar-link" id="jumpNextBtn"><span class="lbl-long">Next unanswered</span><span class="lbl-short">Next blank</span></button>
+        <button type="button" class="bar-link bar-link-primary" data-jump="sectionSubmit"><span class="lbl-long">Review and submit</span><span class="lbl-short">Submit</span></button>
+      </nav>
+    </div>
+  </header>
+  <div id="timerAnnouncer" class="sr-only" aria-live="assertive" aria-atomic="true"></div>
+  <div class="page">
+    <div class="hero-grid">
+      <section class="card">
+        <div class="brand-row">
+          <div class="logo-wrap"><img id="logoExam" src="images/logo.png" alt="LAVA Logo" /></div>
+          <div>
+            <div class="badge">LAVA Training Exam Portal</div>
+            <h1 class="hero-title">Farmers Insurance Training &amp; Operations Final Exam</h1>
+          </div>
+        </div>
+        <p class="muted">This standalone exam covers Farmers company overview, team roles, service standards, the APEX portal, insurance fundamentals, and key acronyms. It has a <strong>30-minute timer</strong>, a strict <strong>3-take limit</strong>, a <strong>90% passing score</strong>, randomized dropdown questions and drag-and-drop items on every take, a timer that stays on screen while you scroll, admin-locked review, and automatic certificate generation for passers.</p>
+        <div class="stats-grid">
+          <div class="mini-card"><div class="mini-label">Passing Score</div><div class="mini-value">90%</div></div>
+          <div class="mini-card"><div class="mini-label">Timer</div><div class="mini-value">30 Min</div></div>
+          <div class="mini-card"><div class="mini-label">Max Takes</div><div class="mini-value">3</div></div>
+          <div class="mini-card"><div class="mini-label">Format</div><div class="mini-value">Standalone</div></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Trainee Information</h2>
+        <div class="field"><label for="candidateName">Full Name</label><input id="candidateName" type="text" placeholder="Enter trainee name" /></div>
+        <div class="field"><label for="agencyName">Agency / Team</label><input id="agencyName" type="text" placeholder="Enter agency or batch" /></div>
+        <div class="field"><label for="trainerName">Trainer Name</label><input id="trainerName" type="text" value="LAVA Training Department" /></div>
+        <div class="timer-box">
+          <div class="mini-label">Exam Timer</div>
+          <div id="timerValue" class="timer-value">30:00</div>
+          <p class="muted" style="margin-bottom:0">Attempts used: <strong id="attemptsUsed">0</strong> / 3</p>
+          <p class="muted" style="margin:4px 0 0">Current take: <strong id="currentTake">-</strong></p>
+        </div>
+        <div class="actions">
+          <button id="shuffleBtn" class="btn btn-secondary">Shuffle Questions</button>
+          <button id="startBtn" class="btn btn-primary">Start Exam</button>
+          <button id="resetBtn" class="btn btn-secondary">Reset Current Form</button>
+        </div>
+      </section>
+    </div>
+
+    <section class="card" style="margin-bottom:18px">
+      <div class="progress-row">
+        <div>
+          <h3 style="margin-bottom:6px">Exam Progress</h3>
+          <div class="muted">Completed <strong id="progressText">0</strong> of <strong id="totalItems">0</strong> items</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;width:min(100%,560px)">
+          <div class="progress-track"><div id="progressFill" class="progress-fill"></div></div>
+          <strong id="progressPct">0%</strong>
+        </div>
+      </div>
+      <div class="dash-grid">
+        <div class="dash-stat"><div class="mini-label">Questions answered</div><div id="dashQ" class="mini-value">0 / 80</div></div>
+        <div class="dash-stat"><div class="mini-label">Drag items placed</div><div id="dashD" class="mini-value">0 / 10</div></div>
+        <div class="dash-stat"><div class="mini-label">Overall completion</div><div id="dashPct" class="mini-value">0%</div></div>
+      </div>
+    </section>
+
+    <section id="sectionQuestions" class="card section-card part-questions" style="margin-bottom:18px">
+      <div class="section-head">
+        <div><span class="section-part">Part 1 of 2</span><h2>Section 1: Randomized Dropdown Questionnaire</h2></div>
+        <span id="qSectionCount" class="section-count">0 of 80 answered</span>
+      </div>
+      <p class="muted">Questions are randomized, but the visible numbering always follows proper counting order.</p>
+      <p id="preStartNote" class="prestart-note">Enter the trainee name, then select <strong>Start Exam</strong> to unlock the questions and start the 30-minute timer.</p>
+      <div id="questionsContainer"></div>
+    </section>
+
+    <section id="sectionDrag" class="card section-card part-drag" style="margin-bottom:18px">
+      <div class="section-head">
+        <div><span class="section-part">Part 2 of 2</span><h2>Section 2: Drag and Drop</h2></div>
+        <span id="dSectionCount" class="section-count">0 of 10 placed</span>
+      </div>
+      <p class="muted">Only one drag item appears at a time. Drag it onto a box, tap or click a box, or use the quick place buttons below it.</p>
+      <div class="drag-grid">
+        <div class="question-card drag-side">
+          <div>
+            <div id="dragProgress" class="drag-chip">Progress: 0 / 10</div>
+            <h3>Current Coverage Item</h3>
+            <p class="muted">Place the current item into <strong>Home Insurance</strong> or <strong>Auto Insurance</strong>.</p>
+            <div id="dragItemWrap"></div>
+            <p class="drag-hint">Keyboard: focus the item, then press <strong>H</strong> or <strong>&larr;</strong> for Home, <strong>A</strong> or <strong>&rarr;</strong> for Auto.</p>
+          </div>
+          <div><div class="actions" style="margin-top:18px"><button id="placeHomeBtn" class="btn btn-secondary">Place in Home</button><button id="placeAutoBtn" class="btn btn-secondary">Place in Auto</button><button id="undoPlaceBtn" class="btn btn-secondary" disabled>Undo last placement</button></div>
+          <p id="lastPlaced" class="drag-last" aria-live="polite"></p></div>
+        </div>
+        <div class="drop-zones">
+          <div id="homeZone" class="drop-zone" role="button" tabindex="0" aria-label="Place current item in Home Insurance"><div class="zone-icon">🏠</div><div class="zone-title">Home Insurance</div><div class="zone-text">Dwelling, other structures, loss of use, mobile homes, and medical payments to others.</div><div id="homeCount" class="zone-pill">Placed: 0</div></div>
+          <div id="autoZone" class="drop-zone" role="button" tabindex="0" aria-label="Place current item in Auto Insurance"><div class="zone-icon">🚗</div><div class="zone-title">Auto Insurance</div><div class="zone-text">Collision, towing, rental reimbursement, vehicle use, and other vehicle-related coverages.</div><div id="autoCount" class="zone-pill">Placed: 0</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="sectionSubmit" class="card section-card" style="margin-bottom:18px">
+      <h3 style="margin-bottom:6px">Review and submit</h3>
+      <p class="muted" style="margin-bottom:0">You can submit once every question is answered and all 10 items are placed. If time runs out, the exam submits automatically and anything left blank is scored as incorrect.</p>
+      <div class="actions">
+        <button id="submitBtn" class="btn btn-primary">Submit Final Exam</button>
+        <button id="adminAccessBtn" class="btn btn-secondary hidden">Admin Review</button>
+        <button id="nextTakeBtn" class="btn btn-danger hidden">Prepare Next Take</button>
+        <button id="downloadCertificateBtn" class="btn btn-success hidden">Download Certificate Again</button>
+      </div>
+      <div id="messageBox" class="message hidden"></div>
+    </section>
+
+    <section id="completionCard" class="card completion-card hidden" style="margin-bottom:18px" aria-live="polite"></section>
+
+    <section id="resultCard" class="card hidden" style="margin-bottom:18px"></section>
+
+    <section id="certificateCard" class="certificate hidden">
+      <div class="certificate-inner">
+        <img class="cert-logo" src="images/logo.png" alt="LAVA Logo" />
+        <div class="cert-small">Official Training Certificate</div>
+        <div class="cert-title">Certificate of Completion</div>
+        <div class="cert-subtitle">Farmers Insurance Training &amp; Operations Final Examination</div>
+        <div class="cert-presented">This certificate is proudly presented to</div>
+        <div id="certName" class="cert-name">Trainee Name</div>
+        <div class="cert-name-rule"></div>
+        <p id="certBody" class="cert-body"></p>
+        <div class="cert-meta-row">
+          <div class="cert-pill">Certificate No.<span id="certMetaNo"></span></div>
+          <div class="cert-pill">Score<span id="certMetaScore"></span></div>
+          <div class="cert-pill">Agency<span id="certMetaAgency"></span></div>
+          <div class="cert-pill">Date Issued<span id="certMetaDate"></span></div>
+          <div class="cert-pill">Take Number<span id="certMetaTake"></span></div>
+        </div>
+        <div class="cert-signatures">
+          <div class="cert-sign">
+            <div class="line"></div>
+            <div id="certTrainerSignName" class="cert-sign-name">Trainer Name</div>
+            <div id="certTrainerSignTitle" class="cert-sign-title">Insurance Trainer Facilitator</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <form name="farmers-exam-results" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="hidden" id="netlifyExamForm">
+      <input type="hidden" name="form-name" value="farmers-exam-results" />
+      <input type="hidden" name="subject" value="LAVA Farmers Exam Submission" />
+      <input type="hidden" name="bot-field" />
+      <input type="hidden" name="candidate_name" />
+      <input type="hidden" name="agency" />
+      <input type="hidden" name="trainer_name" />
+      <input type="hidden" name="score" />
+      <input type="hidden" name="passed" />
+      <input type="hidden" name="objective_correct" />
+      <input type="hidden" name="drag_correct" />
+      <input type="hidden" name="take_number" />
+      <input type="hidden" name="certificate_number" />
+      <input type="hidden" name="submitted_at" />
+      <input type="hidden" name="duration_used" />
+      <input type="hidden" name="result_summary" />
+      <input type="hidden" name="recipient_1" value="leo@lavaautomation.com" />
+      <input type="hidden" name="recipient_2" value="jonas@lavaautomation.com" />
+      <input type="hidden" name="recipient_3" value="au@lavaautomation.com" />
+      <input type="hidden" name="recipient_4" value="shandyl.s@lavaautomation.com" />
+    </form>
+
+    <div id="adminModal" class="modal-backdrop hidden">
+      <div class="modal-card">
+        <div class="badge" style="margin-bottom:14px">Admin Secure Access</div>
+        <h3 style="margin-bottom:8px">Enter Admin Password</h3>
+        <p class="muted" style="margin-bottom:14px">Only admin can view the detailed result, correct answers, and certificate.</p>
+        <div class="field"><label for="adminPasswordInput">Admin Password</label><input id="adminPasswordInput" type="password" placeholder="Enter admin password" /></div>
+        <div id="adminError" class="message hidden" style="margin-top:0;background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.25);color:#fecaca"></div>
+        <div class="actions"><button id="adminUnlockBtn" class="btn btn-primary">Unlock Admin Review</button><button id="adminCancelBtn" class="btn btn-secondary">Cancel</button></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const PASSING_SCORE = 90;
+    const EXAM_DURATION = 30 * 60;
+    const MAX_TAKES = 3;
+    const ADMIN_PASSWORD = 'LAVAADMIN123';
+    const CERTIFICATE_TRAINER_TITLE = 'Insurance Trainer Facilitator';
+    // Keep false to preserve the original rule: score and pass status stay hidden until the admin password is entered.
+    const SHOW_SCORE_TO_TRAINEE = false;
+
+    const EMAILJS_CONFIG = { enabled: false, publicKey: '', serviceId: '', templateId: '' };
+    // Questions with an explicit `options` array use those curated choices (the answer is always included; order is shuffled per take).
+    // Questions without `options` keep the original behavior: 3 random distractors from the shared answer pool.
+    const OBJECTIVE_QUESTIONS = [
+      // Part 1 (Q1-50): Farmers company overview, roles, service standards, and APEX portal
+      // Part 2 (Q51-70): True or False
+      // Part 3 (Q71-80): Acronyms
+      {"id": 1, "question": "According to the overview, what type of organization is Farmers Insurance?", "answer": "An American insurer group of vehicles, homes, and small businesses", "type": "mcq", "options": ["A state-run government regulatory agency", "An American insurer group of vehicles, homes, and small businesses", "An international brokerage catering strictly to commercial maritime fleets", "A non-profit credit counseling union"]},
+      {"id": 2, "question": "How many exclusive and independent agents does Farmers Insurance have?", "answer": "More than 48,000", "type": "mcq", "options": ["More than 10,000", "Approximately 21,000", "More than 48,000", "Exactly 100,000"]},
+      {"id": 3, "question": "Approximately how many employees does Farmers Insurance have?", "answer": "21,000", "type": "mcq", "options": ["12,000", "21,000", "48,000", "84,000"]},
+      {"id": 4, "question": "Under the \"Auto & Specialty\" category, which of the following is explicitly listed as covered?", "answer": "Personal cars, classic vehicles, RVs, motorhomes, travel trailers, boats, and motorcycles", "type": "mcq", "options": ["Commercial airline fleets", "Cargo freight ships", "Personal cars, classic vehicles, RVs, motorhomes, travel trailers, boats, and motorcycles", "High-speed passenger trains and subways"]},
+      {"id": 5, "question": "What is the branded name for Farmers property policy solutions?", "answer": "Smart Plan Home®", "type": "mcq", "options": ["Total Home Protect", "Smart Plan Home®", "Farmers Premier Dwelling", "Secure Shield Property"]},
+      {"id": 6, "question": "Which property types are included under Smart Plan Home®?", "answer": "Homeowners, Renters, Condo, Landlord properties, and Mobile Homes", "type": "mcq", "options": ["High-rise office towers, industrial factories, and warehouses", "Municipal infrastructure and public parks", "Homeowners, Renters, Condo, Landlord properties, and Mobile Homes", "Farmland agricultural crops and livestock facilities only"]},
+      {"id": 7, "question": "What coverage amount range is specified for Personal Umbrella protection?", "answer": "$1M – $5M excess liability", "type": "mcq", "options": ["$250,000 – $500,000 excess liability", "$500,000 – $1M excess liability", "$1M – $5M excess liability", "$5M – $10M excess liability"]},
+      {"id": 8, "question": "What does \"BOP\" stand for under the Umbrella & Commercial offerings?", "answer": "Business Owners Policies", "type": "mcq", "options": ["Business Operations Protocol", "Business Owners Policies", "Basic Organizational Protection", "Broker Option Plan"]},
+      {"id": 9, "question": "In the \"Insurance Industry Structure,\" what primary role does the Customer play?", "answer": "Seeks coverage to protect assets and comply with state mandates & lenders", "type": "mcq", "options": ["Sets underwriting guidelines and establishes premium rates", "Absorbs catastrophic secondary financial risks", "Seeks coverage to protect assets and comply with state mandates & lenders", "Resolves disputed legal claims between local agencies"]},
+      {"id": 10, "question": "What is the role of the local Farmers Agency in the industry structure?", "answer": "Providing expert advice, quotes, sales, and service support", "type": "mcq", "options": ["Holding secondary capital to absorb national catastrophe losses", "Providing expert advice, quotes, sales, and service support", "Enforcing state legislative mandates on commercial banking", "Direct underwriting and capital reinsuring for federal programs"]},
+      {"id": 11, "question": "Which entity underwrites policies, assumes financial risk, sets rates, and processes claims?", "answer": "Farmers Carrier", "type": "mcq", "options": ["The Customer", "Reinsurance", "Farmers Agency", "Farmers Carrier"]},
+      {"id": 12, "question": "What is the primary function of Reinsurance in the insurance chain?", "answer": "Acting as secondary insurance carriers backed to absorb widespread catastrophe risks", "type": "mcq", "options": ["Selling policies directly to individual retail drivers", "Acting as secondary insurance carriers backed to absorb widespread catastrophe risks", "Managing local agency staffing and daily sales prospecting", "Typing vehicle identification numbers into quoting portals"]},
+      {"id": 13, "question": "Which responsibility belongs specifically to the Agency Owner (AO)?", "answer": "E&O compliance, staff management, and financial budgeting", "type": "mcq", "options": ["Lead prospecting and cold calling", "Quoting personal auto policies daily", "E&O compliance, staff management, and financial budgeting", "Entering billing routing data into CRM systems"]},
+      {"id": 14, "question": "What are the key responsibilities of Licensed Agents / Producers (Sales)?", "answer": "Lead prospecting, quoting, advising coverage limits, and closing new business", "type": "mcq", "options": ["Lead prospecting, quoting, advising coverage limits, and closing new business", "Executive strategy, corporate mergers, and payroll accounting", "Claims underwriting and carrier reserve balancing", "Non-licensed customer file indexing and shredding"]},
+      {"id": 15, "question": "Which of the following tasks is assigned to a Non-Licensed Virtual Assistant (VA)?", "answer": "CRM management, billing routing, and document support", "type": "mcq", "options": ["Recommending liability limits on home policies", "CRM management, billing routing, and document support", "Driving long-term agency financial budgeting", "Finalizing and underwriting policy risk rates"]},
+      {"id": 16, "question": "What standard does \"The Farmers Brand Promise\" emphasize to clients?", "answer": "Professional, empathetic, and accurate service protecting valuable assets with care and integrity", "type": "mcq", "options": ["Lowest prices guaranteed without agent consultation", "Fully automated self-service without live human agents", "Professional, empathetic, and accurate service protecting valuable assets with care and integrity", "Guaranteed approval for all high-risk drivers and properties"]},
+      {"id": 17, "question": "According to the \"Radical Empathy & Tone\" guideline, what should you do when a client calls after a car accident or rate spike?", "answer": "Validate their emotions warmly before moving into administrative questions", "type": "mcq", "options": ["Immediately demand policy identification and premium payment", "Validate their emotions warmly before moving into administrative questions", "Transfer the caller directly to carrier claims without speaking", "Cite policy exclusion clauses right away to prevent liability"]},
+      {"id": 18, "question": "Why does the \"Zero-Error Quality Standard\" emphasize double-checking everything?", "answer": "A typo in a VIN or mortgage clause can delay a home closing or invalidate auto coverage", "type": "mcq", "options": ["Insurance systems automatically shut down after three daily typos", "Typos trigger immediate state regulatory fines for the agency", "A typo in a VIN or mortgage clause can delay a home closing or invalidate auto coverage", "Software cannot re-quote any policy once submitted"]},
+      {"id": 19, "question": "What does the standard \"Respond Promptly\" mean in daily practice?", "answer": "Acknowledging a request immediately, even if you do not have the final answer yet", "type": "mcq", "options": ["Replying only after you have found a definitive, permanent solution", "Acknowledging a request immediately, even if you do not have the final answer yet", "Setting up an automated email stating the office is closed", "Forwarding calls immediately to voicemail during business hours"]},
+      {"id": 20, "question": "Why does prompt responsiveness matter to the customer?", "answer": "Speed signals respect and tells customers their time is valuable", "type": "mcq", "options": ["It satisfies state legal filing quotas", "It triggers automatic discount tiers on personal lines", "Speed signals respect and tells customers their time is valuable", "It prevents carriers from canceling the producer's appointment"]},
+      {"id": 21, "question": "Under \"Use Proper Grammar,\" what communication behavior should team members avoid?", "answer": "Slang, overly casual text-speak, muttering, and internal jargon", "type": "mcq", "options": ["Confirming contact details with the caller", "Structured paragraph formatting in emails", "Slang, overly casual text-speak, muttering, and internal jargon", "Professional greetings and polite sign-offs"]},
+      {"id": 22, "question": "How should team members execute the \"Verify Information\" standard?", "answer": "Double-check account numbers, spell names back, and repeat the core issue", "type": "mcq", "options": ["Trust the caller’s spelling without cross-checking", "Guess omitted digits in account numbers based on zip code", "Double-check account numbers, spell names back, and repeat the core issue", "Ask the client to repeat their SSN three consecutive times aloud"]},
+      {"id": 23, "question": "What is the correct best practice if a customer asks an unlicensed VA for advice on liability limits?", "answer": "Transfer coverage advice questions directly to a licensed Producer or CSR", "type": "mcq", "options": ["Offer an educated guess based on neighborhood averages", "Transfer coverage advice questions directly to a licensed Producer or CSR", "Advise the client to purchase the lowest statutory limits available", "Provide advice and add a verbal disclaimer at the end of the call"]},
+      {"id": 24, "question": "What should a VA do immediately before taking the next phone call?", "answer": "Log call notes in the CRM (APEX/AgencyZoom)", "type": "mcq", "options": ["Log call notes in the CRM (APEX/AgencyZoom)", "Clear all browsing cookies and history", "Issue a replacement binder to the mortgage company", "Send an encrypted text message to the Agency Owner"]},
+      {"id": 25, "question": "To avoid typing mistakes during quote prep and safely transmit sensitive financial data, what tools are recommended?", "answer": "Copy/paste or auto-decoder in PolicyCenter; Farmers Secure Email Portal for bank/SSN data", "type": "mcq", "options": ["Manual handwriting notes and public messaging apps", "Copy/paste or auto-decoder in PolicyCenter; Farmers Secure Email Portal for bank/SSN data", "Standard unencrypted email with password-free attachments", "Third-party social media forms and file sharing links"]},
+      {"id": 26, "question": "Which feature allows agents/VAs to instantly look up accounts, policies, or specific entries across the entire database?", "answer": "Global Search Bar", "type": "mcq", "options": ["Reports Hub Search Box", "Global Search Bar", "Preference Center", "Recommendation Engine"]},
+      {"id": 27, "question": "Which component is located at the very top of the interface to give quick access to core systems like Leads, Lead Depot, Reports Hub, Accounts, Tasks, Alerts Hub, and Service Requests?", "answer": "Main Menu", "type": "mcq", "options": ["Main Menu", "Welcome & Action Header", "Bottom Status Bar", "Helpful Links Menu"]},
+      {"id": 28, "question": "What controls the user profile settings, notifications, and favorites on the APEX dashboard?", "answer": "Upper-right Utility Icons", "type": "mcq", "options": ["Global Search dropdown", "Bottom Status Bar shortcuts", "Upper-right Utility Icons", "Agency News & Resources tabs"]},
+      {"id": 29, "question": "The Welcome & Action Header is defined by which key operational elements?", "answer": "Displaying the current date/greeting and featuring the \"Quote New Account\" primary call-to-action button", "type": "mcq", "options": ["Displaying real-time policy claims payouts and adjustor assignments", "Showing system uptime latency and server maintenance schedules", "Displaying the current date/greeting and featuring the \"Quote New Account\" primary call-to-action button", "Managing external agency commissions and licensing renewals"]},
+      {"id": 30, "question": "How is the Notes Field explicitly defined?", "answer": "A yellow sticky-note area directly beneath the welcome banner meant for personal daily reminders or temporary notes", "type": "mcq", "options": ["A permanently archived underwriting file for storing regulatory complaints", "A yellow sticky-note area directly beneath the welcome banner meant for personal daily reminders or temporary notes", "A compliance logging field strictly reserved for financial audit records", "An automated transcript log capturing client telephone conversations"]},
+      {"id": 31, "question": "Which feature is a critical relationship-management widget that lists upcoming birthdays for Active Customers and Prospects over a selectable timeframe to build rapport and client retention?", "answer": "Upcoming Birthdays", "type": "mcq", "options": ["Recommendation Engine", "Upcoming Birthdays", "Win Back Assistant", "Customer Center"]},
+      {"id": 32, "question": "What is the definition and placement of the Reports Hub on the APEX home screen?", "answer": "A quick search box located at the bottom left specifically designed for finding lists, pre-built reports, and performance analytics", "type": "mcq", "options": ["A top-right dashboard view used solely to configure user security profiles", "A slide-out panel that manages customer email messaging preferences", "A quick search box located at the bottom left specifically designed for finding lists, pre-built reports, and performance analytics", "A centralized claims database tracker positioned directly below the main menu"]},
+      {"id": 33, "question": "Which APEX tool tracks operational and policy changes requiring immediate attention using numbered badges categorized into Critical actions, Renewals, Claims, Pending items, and Policy Notifications?", "answer": "Service Alerts & Notifications", "type": "mcq", "options": ["Open Service Requests", "Tasks - Due Today", "Agency News & Resources (ANR)", "Service Alerts & Notifications"]},
+      {"id": 34, "question": "The Recommendation Engine is defined as which of the following?", "answer": "An automated sales assistant tool that flags opportunities to Win Back former clients, Cross-Sell additional policies, or follow up on Quotes Not Closed", "type": "mcq", "options": ["An automated sales assistant tool that flags opportunities to Win Back former clients, Cross-Sell additional policies, or follow up on Quotes Not Closed", "A third-party quoting engine that compares competitor rates against Farmers products", "An automated underwriting engine that rejects high-risk auto and property applications", "A workflow planner designed to distribute customer billing reminders automatically"]},
+      {"id": 35, "question": "Which section tracks incoming marketing leads and high-value opportunities by pulling data from tools such as Farmers FastQuote, BI Farmers.com, and High Value FFRS?", "answer": "Sales & Marketing Notifications", "type": "mcq", "options": ["Service Alerts & Notifications", "Sales & Marketing Notifications", "Recommendation Engine", "Reports Hub"]},
+      {"id": 36, "question": "How is the \"Tasks - Due Today\" component defined?", "answer": "A workflow management section splitting actionable items into High Priority Tasks, My Tasks, and Agency Tasks", "type": "mcq", "options": ["A staff payroll tracker that logs agent timecard hours and commissions", "A historical customer service log categorizing closed claim files", "A workflow management section splitting actionable items into High Priority Tasks, My Tasks, and Agency Tasks", "A statutory compliance audit schedule monitoring state continuing education"]},
+      {"id": 37, "question": "Which section is a dedicated bulletin board with tabs for Agency News, Rates & Rules, and Product Resources that lists time-sensitive system updates, rule revisions, and procedural bulletins?", "answer": "Agency News & Resources (ANR)", "type": "mcq", "options": ["New to APEX", "Agency News & Resources (ANR)", "Reports Hub", "Service Alerts & Notifications"]},
+      {"id": 38, "question": "What is the defined function of the \"New to APEX\" section?", "answer": "A spotlight banner highlighting recent system releases, feature rollouts, and platform guides", "type": "mcq", "options": ["A registry providing biographies of newly contracted agency personnel", "A training portal containing introductory study questions for novice agents", "A spotlight banner highlighting recent system releases, feature rollouts, and platform guides", "A prospect intake form capturing newly submitted personal lines quotes"]},
+      {"id": 39, "question": "How is the \"Helpful Links\" module defined within the APEX portal layout?", "answer": "A bottom-right collapsible menu that acts as a bookmark manager for frequently visited internal and external websites", "type": "mcq", "options": ["A list of external insurance commissioner and state regulator contacts", "A bottom-right collapsible menu that acts as a bookmark manager for frequently visited internal and external websites", "An emergency phone directory containing Farmers claims intake lines", "A breadcrumb navigation bar mapping currently open browser tabs"]},
+      {"id": 40, "question": "Which component is a data table monitoring ongoing customer service files organized by SR#, customer Name, associated Household, and Policy number?", "answer": "Open Service Requests", "type": "mcq", "options": ["Open Service Requests", "Lead Depot", "Service Alerts & Notifications", "Tasks - Due Today"]},
+      {"id": 41, "question": "How is the Bottom Status Bar defined regarding its operational utility and compliance purpose?", "answer": "A footer providing instant access to utility tools (Account Lookup, Report Suspicious Activity) and legal/compliance disclosures", "type": "mcq", "options": ["A header banner used to configure global user passwords and two-factor authentication", "A footer providing instant access to utility tools (Account Lookup, Report Suspicious Activity) and legal/compliance disclosures", "A floating widget enabling live communication with underwriters", "An API connection indicator monitoring real-time system synchronization"]},
+      {"id": 42, "question": "In the APEX portal compliance guidelines, how is the personal information restriction explicitly defined?", "answer": "No health information (e.g., Medicare or Life underwriting information) is permitted in APEX", "type": "mcq", "options": ["Financial account details cannot be updated after standard business hours", "Social Security numbers cannot be stored without printed supervisor consent", "No health information (e.g., Medicare or Life underwriting information) is permitted in APEX", "Email addresses must be verified through third-party multi-factor authentication"]},
+      {"id": 43, "question": "In the Recommendation Engine definition, what does the \"Win Back\" capability specifically target?", "answer": "Re-engaging and regaining former clients", "type": "mcq", "options": ["Resolving disputed claims with current policyholders", "Re-engaging and regaining former clients", "Negotiating lower premiums with third-party reinsurers", "Escalating denied underwriting applications to state managers"]},
+      {"id": 44, "question": "What does the \"Cross-Sell\" trigger in the Recommendation Engine identify?", "answer": "Marketing additional policies to existing accounts", "type": "mcq", "options": ["Marketing additional policies to existing accounts", "Splitting shared commercial policies across multiple partner agencies", "Transferring personal lines customers to brokered carrier networks", "Consolidating distinct household files into a single agency profile"]},
+      {"id": 45, "question": "What operational capability was specifically highlighted in the June 2026 release of \"New to APEX\"?", "answer": "Real-Time Service Requests", "type": "mcq", "options": ["Automated commercial certificate generation", "Real-Time Service Requests", "Cloud-based client phone recording", "One-click credit score retrieval"]},
+      {"id": 46, "question": "What type of documentation do Bulletins BNB 26-0556, BNB 26-0552, and BNB 26-0547 represent in the ANR section?", "answer": "Procedural bulletins detailing Auto ID Card Texting Availability in APEX", "type": "mcq", "options": ["Procedural bulletins detailing Auto ID Card Texting Availability in APEX", "Underwriting advisories governing California earthquake exclusions", "Annual continuing education deadlines for customer service reps", "Commission percentage adjustment summaries for personal auto"]},
+      {"id": 47, "question": "In the ANR section, what specific category of update is represented by \"BNB 26-0570: Auto Flex 5.1\"?", "answer": "Rate Revision", "type": "mcq", "options": ["Software Bug Fix", "Deductible Option Revision", "Rate Revision", "System Retirement Notice"]},
+      {"id": 48, "question": "Under the Tasks - Due Today categorization, what defines the \"Agency Tasks\" category?", "answer": "Actionable workflow items relevant to the agency as a whole rather than an individual's personal queue", "type": "mcq", "options": ["Tasks assigned system-wide to corporate Farmers underwriters", "Actionable workflow items relevant to the agency as a whole rather than an individual's personal queue", "Inbound customer calls waiting in the main phone queue", "Mandatory state licensing filings required by the agency owner"]},
+      {"id": 49, "question": "Under the Helpful Links collapsible bookmark manager, which category provides educational and training access?", "answer": "University of Farmers", "type": "mcq", "options": ["Product Platforms", "Service Ops", "Preference Center", "University of Farmers"]},
+      {"id": 50, "question": "What is the function of the \"Report Suspicious Activity\" utility located in the bottom status area?", "answer": "To provide a direct compliance tool for reporting potential fraud, security, or regulatory concerns", "type": "mcq", "options": ["To block spam emails received from commercial lead vendors", "To provide a direct compliance tool for reporting potential fraud, security, or regulatory concerns", "To run an automatic background check on prospective new hires", "To reset agency firewall permissions after hours"]},
+      {"id": 51, "question": "When the insured fails to pay their premium, carriers give them 90 days to pay.", "answer": "FALSE", "type": "tf"},
+      {"id": 52, "question": "LPR is the code for an ACORD cancellation form.", "answer": "TRUE", "type": "tf"},
+      {"id": 53, "question": "Deductibles are the maximum out-of-pocket cost before the carrier pays.", "answer": "FALSE", "type": "tf"},
+      {"id": 54, "question": "Condo insurance is known as HO6.", "answer": "TRUE", "type": "tf"},
+      {"id": 55, "question": "Underwriter and Adjuster have the same function.", "answer": "FALSE", "type": "tf"},
+      {"id": 56, "question": "Some carriers offer good student discounts.", "answer": "TRUE", "type": "tf"},
+      {"id": 57, "question": "The adjuster decides whether the applicant is eligible for insurance, depending on the risk.", "answer": "FALSE", "type": "tf"},
+      {"id": 58, "question": "Collision coverage protects against theft.", "answer": "FALSE", "type": "tf"},
+      {"id": 59, "question": "An underwriter is a professional who works for the insurance agency.", "answer": "FALSE", "type": "tf"},
+      {"id": 60, "question": "A carrier is a company that provides insurance policies.", "answer": "TRUE", "type": "tf"},
+      {"id": 61, "question": "All states in the US require the same exact level of auto insurance.", "answer": "FALSE", "type": "tf"},
+      {"id": 62, "question": "An insurance policy is a legal contract between the insured and the insurer.", "answer": "TRUE", "type": "tf"},
+      {"id": 63, "question": "Insurance fraud is illegal and can result in criminal charges.", "answer": "TRUE", "type": "tf"},
+      {"id": 64, "question": "Policy is the formal written contract between the insurer and insured.", "answer": "TRUE", "type": "tf"},
+      {"id": 65, "question": "Collision coverage will pay for the insured's vehicle to be fixed.", "answer": "TRUE", "type": "tf"},
+      {"id": 66, "question": "A homeowner's insurance policy pays to repair or rebuild a home if it is damaged or destroyed by fire, hurricane, hail, or lightning.", "answer": "TRUE", "type": "tf"},
+      {"id": 67, "question": "Policies refer to loss events as \"perils\".", "answer": "TRUE", "type": "tf"},
+      {"id": 68, "question": "A homeowner’s policy should cover the cost of the home and the land.", "answer": "FALSE", "type": "tf"},
+      {"id": 69, "question": "People who rent a home or apartment are required to have Homeowners Insurance.", "answer": "FALSE", "type": "tf"},
+      {"id": 70, "question": "A homeowner’s policy will pay for upgrades when the homeowner wants a new kitchen or bathroom.", "answer": "FALSE", "type": "tf"},
+      {"id": 71, "question": "What does CRM stand for?", "answer": "Customer Relationship Management", "type": "acronym", "options": ["Customer Relationship Management", "Client Risk Management", "Customer Records Module", "Carrier Relationship Manager"]},
+      {"id": 72, "question": "What does LOU stand for?", "answer": "Loss of Use", "type": "acronym", "options": ["Loss of Use", "Limit of Use", "Lapse of Underwriting", "Liability of Owner"]},
+      {"id": 73, "question": "What does ER stand for?", "answer": "Emergency Room", "type": "acronym", "options": ["Emergency Room", "Estimated Replacement", "Excess Rate", "Endorsement Request"]},
+      {"id": 74, "question": "What does GL stand for?", "answer": "General Liability", "type": "acronym", "options": ["General Liability", "Guaranteed Loss", "Gross Limit", "Group Liability"]},
+      {"id": 75, "question": "What does EOI stand for?", "answer": "Evidence of Insurance", "type": "acronym", "options": ["Evidence of Insurance", "Estimate of Indemnity", "Endorsement of Insured", "Extension of Insurance"]},
+      {"id": 76, "question": "What does PIP stand for?", "answer": "Personal Injury Protection", "type": "acronym", "options": ["Personal Injury Protection", "Property Insurance Policy", "Primary Insured Payment", "Personal Income Protection"]},
+      {"id": 77, "question": "What does RCE stand for?", "answer": "Replacement Cost Estimator", "type": "acronym", "options": ["Replacement Cost Estimator", "Risk Coverage Evaluation", "Rate Calculation Engine", "Residential Claim Estimate"]},
+      {"id": 78, "question": "What does MVR stand for?", "answer": "Motor Vehicle Report", "type": "acronym", "options": ["Motor Vehicle Report", "Market Value Rating", "Minimum Vehicle Requirement", "Multi-Vehicle Rate"]},
+      {"id": 79, "question": "What does UMBI stand for?", "answer": "Uninsured Motorist Bodily Injury", "type": "acronym", "options": ["Uninsured Motorist Bodily Injury", "Underinsured Medical Benefit Insurance", "Umbrella Bodily Injury", "Uninsured Motorist Bonus Incentive"]},
+      {"id": 80, "question": "What does PH stand for?", "answer": "Policy Holder", "type": "acronym", "options": ["Policy Holder", "Primary Homeowner", "Property Hazard", "Premium History"]},
+    ];
+    const DRAG_ITEMS = [{"id": 81, "label": "Collision", "answer": "AUTO"}, {"id": 82, "label": "Dwelling", "answer": "HOME"}, {"id": 83, "label": "Towing and Labor", "answer": "AUTO"}, {"id": 84, "label": "Other Structures", "answer": "HOME"}, {"id": 85, "label": "Rental Reimbursement", "answer": "AUTO"}, {"id": 86, "label": "Medical Payments to Others", "answer": "HOME"}, {"id": 87, "label": "Loss of Use", "answer": "HOME"}, {"id": 88, "label": "Mobile Home Owners", "answer": "HOME"}, {"id": 89, "label": "Personal Errands / Leisure", "answer": "AUTO"}, {"id": 90, "label": "HNOA", "answer": "AUTO"}];
+    const answerPool = [...new Set(OBJECTIVE_QUESTIONS.filter(q => q.type !== 'tf').map(q => q.answer))];
+
+    const el = {
+      candidateName: document.getElementById('candidateName'), agencyName: document.getElementById('agencyName'), trainerName: document.getElementById('trainerName'), attemptsUsed: document.getElementById('attemptsUsed'), currentTake: document.getElementById('currentTake'), timerValue: document.getElementById('timerValue'), shuffleBtn: document.getElementById('shuffleBtn'), startBtn: document.getElementById('startBtn'), resetBtn: document.getElementById('resetBtn'), submitBtn: document.getElementById('submitBtn'), adminAccessBtn: document.getElementById('adminAccessBtn'), nextTakeBtn: document.getElementById('nextTakeBtn'), downloadCertificateBtn: document.getElementById('downloadCertificateBtn'), adminModal: document.getElementById('adminModal'), adminPasswordInput: document.getElementById('adminPasswordInput'), adminUnlockBtn: document.getElementById('adminUnlockBtn'), adminCancelBtn: document.getElementById('adminCancelBtn'), adminError: document.getElementById('adminError'), questionsContainer: document.getElementById('questionsContainer'), progressText: document.getElementById('progressText'), totalItems: document.getElementById('totalItems'), progressFill: document.getElementById('progressFill'), progressPct: document.getElementById('progressPct'), messageBox: document.getElementById('messageBox'), dragProgress: document.getElementById('dragProgress'), dragItemWrap: document.getElementById('dragItemWrap'), placeHomeBtn: document.getElementById('placeHomeBtn'), placeAutoBtn: document.getElementById('placeAutoBtn'), homeZone: document.getElementById('homeZone'), autoZone: document.getElementById('autoZone'), homeCount: document.getElementById('homeCount'), autoCount: document.getElementById('autoCount'), resultCard: document.getElementById('resultCard'), certificateCard: document.getElementById('certificateCard'), certName: document.getElementById('certName'), certBody: document.getElementById('certBody'), certMetaNo: document.getElementById('certMetaNo'), certMetaScore: document.getElementById('certMetaScore'), certMetaAgency: document.getElementById('certMetaAgency'), certMetaDate: document.getElementById('certMetaDate'), certMetaTake: document.getElementById('certMetaTake'), certTrainerSignName: document.getElementById('certTrainerSignName'), certTrainerSignTitle: document.getElementById('certTrainerSignTitle'),
+      examBar: document.getElementById('examBar'), barTimer: document.getElementById('barTimer'), barTake: document.getElementById('barTake'), barQ: document.getElementById('barQ'), barD: document.getElementById('barD'), barFill: document.getElementById('barFill'), barPct: document.getElementById('barPct'), timerAnnouncer: document.getElementById('timerAnnouncer'),
+      dashQ: document.getElementById('dashQ'), dashD: document.getElementById('dashD'), dashPct: document.getElementById('dashPct'), qSectionCount: document.getElementById('qSectionCount'), dSectionCount: document.getElementById('dSectionCount'), preStartNote: document.getElementById('preStartNote'), jumpNextBtn: document.getElementById('jumpNextBtn'), undoPlaceBtn: document.getElementById('undoPlaceBtn'), lastPlaced: document.getElementById('lastPlaced'), completionCard: document.getElementById('completionCard'), sectionSubmit: document.getElementById('sectionSubmit')
+    };
+
+    const state = { questions: [], answers: {}, dragPlacements: {}, started: false, currentTake: 0, timerId: null, secondsLeft: EXAM_DURATION, result: null, autoDownloaded: false, adminUnlocked: false, deadline: null, warned5: false, warned1: false, dragOrder: [], orderConsumed: false, placeLockUntil: 0, dragHistory: [] };
+    const reduceMotion = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : { matches:false };
+
+    function shuffle(arr){const copy=[...arr];for(let i=copy.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[copy[i],copy[j]]=[copy[j],copy[i]]}return copy}
+    function hasCuratedOptions(q){ return Array.isArray(q.options) && q.options.includes(q.answer) && new Set(q.options).size===q.options.length && q.options.length>=2; }
+    function buildOptions(q){ if(q.type==='tf') return ['TRUE','FALSE']; if(hasCuratedOptions(q)) return shuffle(q.options); const distractors=shuffle(answerPool.filter(a=>a!==q.answer)).slice(0,3); return shuffle([q.answer,...distractors]); }
+    // Integrity check at load: curated options must contain the answer exactly once; otherwise that question falls back to the random pool.
+    OBJECTIVE_QUESTIONS.forEach(q=>{ if(q.options!==undefined && !hasCuratedOptions(q)) console.warn('Question '+q.id+' has invalid options; using random distractors instead.'); });
+    // The source data is read-only at runtime; every take works on shuffled copies.
+    [OBJECTIVE_QUESTIONS, DRAG_ITEMS].forEach(list=>{ list.forEach(item=>{ if(item.options) Object.freeze(item.options); Object.freeze(item); }); Object.freeze(list); });
+    function formatTime(total){const m=Math.floor(total/60), s=total%60; return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')}
+    function escapeHtml(str){return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
+    function normalizedName(n){return n.trim().toLowerCase()}
+    function getAttemptsForName(name){return Number(localStorage.getItem('lava_farmers_exam_attempts_'+normalizedName(name))||0)}
+    function setAttemptsForName(name,val){localStorage.setItem('lava_farmers_exam_attempts_'+normalizedName(name),String(val))}
+    function showMessage(t){el.messageBox.textContent=t;el.messageBox.classList.remove('hidden')} function hideMessage(){el.messageBox.textContent='';el.messageBox.classList.add('hidden')}
+    function updateAttemptsUI(){const name=el.candidateName.value.trim();const attempts=name?getAttemptsForName(name):0;el.attemptsUsed.textContent=attempts;el.currentTake.textContent=state.currentTake?state.currentTake:'-'}
+
+    // Fresh randomized sequence for a new attempt. DRAG_ITEMS itself is never mutated; shuffle() returns a copy.
+    function prepareAttemptOrder(){ state.questions=shuffle(OBJECTIVE_QUESTIONS).map(q=>({...q,options:buildOptions(q)})); state.dragOrder=shuffle(DRAG_ITEMS); state.orderConsumed=false; }
+    function buildExam(){ prepareAttemptOrder(); state.answers={}; state.dragPlacements={}; state.dragHistory=[]; state.result=null; state.autoDownloaded=false; state.adminUnlocked=false; renderQuestions(); renderDrag(); renderProgress(); renderResult(); renderCertificate(null); closeAdminModal(); hideMessage(); updateButtons(); }
+    function renderQuestions(){ el.questionsContainer.innerHTML=''; state.questions.forEach((q,index)=>{ const wrap=document.createElement('div'); wrap.className='question-card'+(state.answers[q.id]?' is-answered':''); wrap.id='qcard-'+q.id; const num=document.createElement('div'); num.className='question-number'; num.textContent='Question '+(index+1); const p=document.createElement('p'); p.textContent=q.question; const sel=document.createElement('select'); sel.disabled=!state.started||!!state.result; sel.innerHTML='<option value="">Select your answer</option>'+q.options.map(opt=>`<option value="${escapeHtml(opt)}">${escapeHtml(opt)}</option>`).join(''); sel.value=state.answers[q.id]||''; sel.setAttribute('aria-label','Answer for question '+(index+1)); sel.addEventListener('change',e=>{ if(state.result) return; if(e.target.value){ state.answers[q.id]=e.target.value; } else { delete state.answers[q.id]; } wrap.classList.toggle('is-answered', !!e.target.value); renderProgress();}); wrap.appendChild(num); wrap.appendChild(p); wrap.appendChild(sel); el.questionsContainer.appendChild(wrap); }); el.totalItems.textContent=String(state.questions.length+DRAG_ITEMS.length); }
+    function currentDragItem(){ return state.dragOrder.find(item=>!state.dragPlacements[item.id]) || null; }
+    function renderDrag(){ const current=currentDragItem(); const placed=placedCount(); const live=state.started && !state.result; const hadFocus=!!(document.activeElement && document.activeElement.classList && document.activeElement.classList.contains('drag-card'));
+      el.dragProgress.textContent=`Progress: ${placed} / ${DRAG_ITEMS.length}`; el.homeCount.textContent=`Placed: ${Object.values(state.dragPlacements).filter(v=>v==='HOME').length}`; el.autoCount.textContent=`Placed: ${Object.values(state.dragPlacements).filter(v=>v==='AUTO').length}`;
+      el.undoPlaceBtn.disabled=!live || !state.dragHistory.length; if(!state.dragHistory.length) el.lastPlaced.textContent='';
+      [el.homeZone, el.autoZone].forEach(z=>z.setAttribute('aria-disabled', (live && current) ? 'false':'true'));
+      el.dragItemWrap.innerHTML='';
+      if(!current){ const done=document.createElement('div'); done.className='question-card'; done.innerHTML='<h3 style="margin-top:0">All drag items completed</h3><p class="muted" style="margin-bottom:0">'+(live?`All ${DRAG_ITEMS.length} items are placed. You can still undo the last placement before submitting.`:'Great job! You completed the matching section.')+'</p>'; el.dragItemWrap.appendChild(done); el.placeHomeBtn.disabled=true; el.placeAutoBtn.disabled=true; return; }
+      const drag=document.createElement('div'); drag.className='drag-card'+(live?'':' is-idle'); const count=document.createElement('span'); count.className='drag-card-count'; count.textContent=`Item ${placed+1} of ${DRAG_ITEMS.length}`; const label=document.createElement('span'); label.textContent=current.label; drag.appendChild(count); drag.appendChild(label);
+      drag.setAttribute('draggable', live ? 'true':'false'); drag.tabIndex = live ? 0 : -1; drag.setAttribute('role','group'); drag.setAttribute('aria-roledescription','draggable item'); drag.setAttribute('aria-label', `Current item ${placed+1} of ${DRAG_ITEMS.length}: ${current.label}. Press H or Left Arrow for Home, A or Right Arrow for Auto.`); drag.setAttribute('aria-keyshortcuts','H A ArrowLeft ArrowRight');
+      drag.addEventListener('dragstart',e=>{ if(!state.started||state.result){e.preventDefault(); return;} e.dataTransfer.setData('text/plain',String(current.id)); e.dataTransfer.effectAllowed='move'; drag.classList.add('dragging'); activateZones(true); });
+      drag.addEventListener('dragend',()=>{ drag.classList.remove('dragging'); activateZones(false); });
+      drag.addEventListener('keydown',e=>{ if(!state.started||state.result||e.altKey||e.ctrlKey||e.metaKey) return; const k=e.key.toLowerCase(); if(k==='h'||e.key==='ArrowLeft'){ e.preventDefault(); placeCurrentItem('HOME'); } else if(k==='a'||e.key==='ArrowRight'){ e.preventDefault(); placeCurrentItem('AUTO'); } });
+      attachTouchDrag(drag, current);
+      el.dragItemWrap.appendChild(drag); if(hadFocus && live) drag.focus({preventScroll:true});
+      el.placeHomeBtn.disabled=!live; el.placeAutoBtn.disabled=!live; }
+    // Touch / pen dragging (HTML5 drag-and-drop does not work reliably on phones and tablets).
+    function zoneAt(x,y){ for(const z of [el.homeZone, el.autoZone]){ const r=z.getBoundingClientRect(); if(x>=r.left && x<=r.right && y>=r.top && y<=r.bottom) return z; } return null; }
+    function attachTouchDrag(card, item){ let start=null, dragging=false, over=null;
+      const clearOver=()=>{ if(over) over.classList.remove('over'); over=null; };
+      card.addEventListener('pointerdown',e=>{ if(e.pointerType==='mouse' || !state.started || state.result) return; start={x:e.clientX,y:e.clientY,sx:window.scrollX,sy:window.scrollY,id:e.pointerId}; dragging=false; try{ card.setPointerCapture(e.pointerId); }catch(err){} });
+      card.addEventListener('pointermove',e=>{ if(!start || e.pointerId!==start.id) return; const dx=e.clientX-start.x, dy=e.clientY-start.y; if(!dragging && Math.hypot(dx,dy)>8){ dragging=true; card.classList.add('dragging','touch-dragging'); activateZones(true); } if(!dragging) return; e.preventDefault();
+        if(e.clientY > window.innerHeight-60) window.scrollBy(0,14); else if(e.clientY < (el.examBar.offsetHeight||0)+50) window.scrollBy(0,-14);
+        card.style.transform=`translate(${dx+window.scrollX-start.sx}px,${dy+window.scrollY-start.sy}px)`; const z=zoneAt(e.clientX,e.clientY); if(z!==over){ clearOver(); over=z; if(z) z.classList.add('over'); } });
+      const finish=(e,cancel)=>{ if(!start || e.pointerId!==start.id) return; const target=(!cancel && dragging && over) ? (over===el.homeZone?'HOME':'AUTO') : null; start=null; dragging=false; card.style.transform=''; card.classList.remove('dragging','touch-dragging'); activateZones(false); clearOver(); if(target) placeCurrentItem(target, item.id); };
+      card.addEventListener('pointerup',e=>finish(e,false)); card.addEventListener('pointercancel',e=>finish(e,true)); }
+    function answeredCount(){ return state.questions.filter(q=>!!state.answers[q.id]).length; }
+    function placedCount(){ return DRAG_ITEMS.filter(item=>!!state.dragPlacements[item.id]).length; }
+    function renderProgress(){ const qDone=answeredCount(); const dDone=placedCount(); const done=qDone+dDone; const total=state.questions.length + DRAG_ITEMS.length; const pct=total?Math.round((done/total)*100):0; el.progressText.textContent=String(done); el.totalItems.textContent=String(total); el.progressFill.style.width=pct+'%'; el.progressPct.textContent=pct+'%';
+      el.barQ.textContent=`${qDone}/${state.questions.length}`; el.barD.textContent=`${dDone}/${DRAG_ITEMS.length}`; el.barFill.style.width=pct+'%'; el.barPct.textContent=pct+'%';
+      el.dashQ.textContent=`${qDone} / ${state.questions.length}`; el.dashD.textContent=`${dDone} / ${DRAG_ITEMS.length}`; el.dashPct.textContent=pct+'%';
+      el.qSectionCount.textContent=`${qDone} of ${state.questions.length} answered`; el.qSectionCount.classList.toggle('is-done', state.questions.length>0 && qDone===state.questions.length);
+      el.dSectionCount.textContent=`${dDone} of ${DRAG_ITEMS.length} placed`; el.dSectionCount.classList.toggle('is-done', dDone===DRAG_ITEMS.length); }
+    function renderCompletion(){ const r=state.result; if(!r){ el.completionCard.classList.add('hidden'); el.completionCard.innerHTML=''; return; }
+      const showScore=state.adminUnlocked || SHOW_SCORE_TO_TRAINEE; const attempts=r.name?getAttemptsForName(r.name):0; const remaining=Math.max(0, MAX_TAKES-attempts);
+      const scoreHtml = showScore ? `<div class="result-badge ${r.passed?'result-pass':'result-fail'}" style="margin:14px 0 0">${r.passed?'Passed':'Needs Retake'} with ${r.percentage}%</div>
+        <div class="score-threshold" role="img" aria-label="Score ${r.percentage} percent; passing score ${PASSING_SCORE} percent"><div class="score-threshold-fill" style="width:${r.percentage}%;background:${r.passed?'linear-gradient(90deg,#16a34a,#22c55e)':'linear-gradient(90deg,var(--orange),var(--red2))'}"></div><div class="score-threshold-mark" style="left:${PASSING_SCORE}%"></div><span class="score-threshold-label" style="left:${PASSING_SCORE}%">Pass ${PASSING_SCORE}%</span></div>
+        <div class="score-threshold-legend"><span>0%</span><span>100%</span></div>`
+        : `<div class="completion-note">Your score, pass status, answer review, and certificate are released by an administrator. Let your trainer know you have submitted.</div>`;
+      el.completionCard.innerHTML = `<h2 id="completionHeading" tabindex="-1" style="margin-bottom:6px">${r.autoSubmitted?'Time is up: your exam was submitted':'Exam submitted'}</h2>
+        <p class="muted" style="margin-bottom:0">Thank you, ${escapeHtml(r.name)}. Take ${r.takeNumber} of ${MAX_TAKES} was recorded on ${escapeHtml(r.submittedAt||r.date)}. Remaining takes on this browser: ${remaining}.</p>
+        <div class="completion-grid">
+          <div class="dash-stat"><div class="mini-label">Questions answered</div><div class="mini-value">${r.answeredCount} / ${r.questionTotal}</div></div>
+          <div class="dash-stat"><div class="mini-label">Drag items placed</div><div class="mini-value">${r.placedCount} / ${DRAG_ITEMS.length}</div></div>
+          <div class="dash-stat"><div class="mini-label">Time used</div><div class="mini-value">${formatTime(r.usedSeconds||0)}</div></div>
+          <div class="dash-stat"><div class="mini-label">Take number</div><div class="mini-value">${r.takeNumber}</div></div>
+        </div>${scoreHtml}`;
+      el.completionCard.classList.remove('hidden'); }
+    function renderResult(){ renderCompletion(); if(!state.result || !state.adminUnlocked){ el.resultCard.classList.add('hidden'); el.resultCard.innerHTML=''; return; } const r=state.result; const badge=`<div class="result-badge ${r.passed?'result-pass':'result-fail'}">${r.passed?'Passed':'Needs Retake'}</div>`; const reviewHtml=!r.passed?`<div class="review-grid" style="margin-top:18px"><div class="question-card"><h3>Missed Dropdown Questions</h3>${r.missedQuestions.length ? r.missedQuestions.map(item=>`<div class="review-item"><div class="question-number">Question ${item.displayNumber}</div><div>${escapeHtml(item.question)}</div><div style="margin-top:8px;color:#fca5a5">Your answer: ${escapeHtml(item.userAnswer || 'No answer')}</div><div style="margin-top:6px;color:#86efac">Correct answer: ${escapeHtml(item.answer)}</div></div>`).join('') : '<div class="review-item">Perfect score in the dropdown section.</div>'}</div><div class="question-card"><h3>Missed Drag Items</h3>${r.missedDrag.length ? r.missedDrag.map(item=>`<div class="review-item"><div class="question-number">Item ${item.displayNumber}</div><div>${escapeHtml(item.label)}</div><div style="margin-top:8px;color:#fca5a5">Your placement: ${escapeHtml(item.userPlacement || 'Not answered')}</div><div style="margin-top:6px;color:#86efac">Correct placement: ${escapeHtml(item.answer)}</div></div>`).join('') : '<div class="review-item">Perfect score in the drag-and-drop section.</div>'}</div></div>`:'';
+      const answerKeyHtml=`<div class="answer-key-grid"><div class="question-card"><h3>Full Question Answer Key</h3>${r.allQuestions.map(item=>`<div class="review-item"><div class="question-number">Question ${item.displayNumber}</div><div>${escapeHtml(item.question)}</div><div style="margin-top:8px">Your answer: <span class="${item.userAnswer===item.answer?'status-correct':'status-wrong'}">${escapeHtml(item.userAnswer || 'No answer')}</span></div><div style="margin-top:6px;color:#86efac">Correct answer: ${escapeHtml(item.answer)}</div></div>`).join('')}</div><div class="question-card"><h3>Full Drag-and-Drop Answer Key</h3>${r.allDrag.map(item=>`<div class="review-item"><div class="question-number">Item ${item.displayNumber}</div><div>${escapeHtml(item.label)}</div><div style="margin-top:8px">Your placement: <span class="${item.userPlacement===item.answer?'status-correct':'status-wrong'}">${escapeHtml(item.userPlacement || 'Not answered')}</span></div><div style="margin-top:6px;color:#86efac">Correct placement: ${escapeHtml(item.answer)}</div></div>`).join('')}</div></div>`;
+      el.resultCard.innerHTML = `${badge}<h2>Exam Result</h2><p class="muted">${escapeHtml(r.name)} scored <strong>${r.percentage}%</strong> on the Farmers Insurance Training &amp; Operations Final Exam. Passing score: ${PASSING_SCORE}%.${r.autoSubmitted?' This take was auto-submitted when time ran out.':''}</p><div class="stats-grid" style="margin-top:16px"><div class="mini-card"><div class="mini-label">Overall Score</div><div class="mini-value">${r.percentage}%</div></div><div class="mini-card"><div class="mini-label">Dropdown Score</div><div class="mini-value">${r.objectiveCorrect}/${r.questionTotal}</div></div><div class="mini-card"><div class="mini-label">Drag Score</div><div class="mini-value">${r.dragCorrect}/${DRAG_ITEMS.length}</div></div><div class="mini-card"><div class="mini-label">Take Number</div><div class="mini-value">${r.takeNumber}</div></div></div>${reviewHtml}${answerKeyHtml}`;
+      el.resultCard.classList.remove('hidden');
+    }
+    function renderCertificate(r){ if(!r || !r.passed || !state.adminUnlocked){ el.certificateCard.classList.add('hidden'); return; } el.certName.textContent=r.name; el.certBody.innerHTML=`for successfully passing the <strong>Farmers Insurance Training &amp; Operations Final Examination</strong> and demonstrating proficiency in the LAVA Farmers Insurance training program.`; el.certMetaNo.textContent=r.certificateNumber; el.certMetaScore.textContent=r.percentage + '%'; el.certMetaAgency.textContent=r.agency || 'LAVA Training Batch'; el.certMetaDate.textContent=r.date; el.certMetaTake.textContent=String(r.takeNumber); el.certTrainerSignName.textContent=r.trainer; el.certTrainerSignTitle.textContent=CERTIFICATE_TRAINER_TITLE; el.certificateCard.classList.remove('hidden'); }
+    function updateButtons(){ const name=el.candidateName.value.trim(); const attempts=name?getAttemptsForName(name):0; const locked=attempts>=MAX_TAKES; el.shuffleBtn.disabled=state.started; el.startBtn.disabled=state.started || !!state.result || locked; el.submitBtn.disabled=!state.started || !!state.result; el.adminAccessBtn.classList.toggle('hidden', !state.result); el.nextTakeBtn.classList.toggle('hidden', !(state.result && !state.result.passed && attempts<MAX_TAKES)); el.downloadCertificateBtn.classList.toggle('hidden', !(state.result && state.result.passed && state.adminUnlocked)); el.preStartNote.classList.toggle('hidden', state.started || !!state.result); renderExamBar(); if(locked && !state.started && !state.result && name){ showMessage('This trainee has already used all 3 allowed takes for this browser.'); } }
+    // Timer: counts down against a fixed deadline so it stays accurate even if the browser throttles a background tab.
+    // Only one interval can exist: startTimer() always clears the previous one first.
+    function startTimer(){ clearTimer(); state.secondsLeft=EXAM_DURATION; state.deadline=Date.now()+EXAM_DURATION*1000; state.warned5=false; state.warned1=false; updateTimer(); state.timerId=setInterval(tickTimer,250); }
+    function tickTimer(){ if(!state.deadline) return; const left=Math.max(0,Math.ceil((state.deadline-Date.now())/1000)); if(left!==state.secondsLeft){ state.secondsLeft=left; updateTimer(); } if(left<=0){ clearTimer(); submitExam(true); } }
+    function clearTimer(){ if(state.timerId){ clearInterval(state.timerId); state.timerId=null; } state.deadline=null; }
+    function updateTimer(){ const secs=Math.max(0,state.secondsLeft); const text=formatTime(secs); const live=state.started && !state.result; const warn=live && secs<=300 && secs>60; const crit=live && secs<=60;
+      el.timerValue.textContent=text; el.timerValue.classList.toggle('timer-warning', live && secs <= 300); el.timerValue.classList.toggle('timer-critical', crit);
+      el.barTimer.textContent=text; el.examBar.classList.toggle('is-warning', warn); el.examBar.classList.toggle('is-critical', crit);
+      if(live && secs<=300 && secs>60 && !state.warned5){ state.warned5=true; el.timerAnnouncer.textContent='Five minutes remaining.'; }
+      if(live && secs<=60 && secs>0 && !state.warned1){ state.warned1=true; el.timerAnnouncer.textContent='One minute remaining. The exam submits automatically at zero.'; } }
+    function renderExamBar(){ const live=state.started && !state.result; el.examBar.classList.toggle('hidden', !live); document.documentElement.classList.toggle('exam-live', live); el.barTake.textContent=state.currentTake||'-'; if(live) document.documentElement.style.setProperty('--bar-h', el.examBar.offsetHeight+'px'); else updateTimer(); }
+    function activateZones(active){ el.homeZone.classList.toggle('active',active); el.autoZone.classList.toggle('active',active); }
+    function flashZone(target){ const zone=target==='HOME'?el.homeZone:el.autoZone; zone.classList.remove('received'); void zone.offsetWidth; zone.classList.add(target==='HOME'?'flash-home':'flash-auto','received'); setTimeout(()=>zone.classList.remove('flash-home','flash-auto','received'),450); }
+    function placeCurrentItem(target, expectedId){ if(!state.started || state.result) return; if(target!=='HOME' && target!=='AUTO') return; const now=Date.now(); if(now<state.placeLockUntil) return; const item=currentDragItem(); if(!item) return; if(expectedId!==undefined && String(expectedId)!==String(item.id)) return; state.placeLockUntil=now+250; state.dragPlacements[item.id]=target; state.dragHistory.push(item.id); renderDrag(); renderProgress(); flashZone(target); el.lastPlaced.textContent=`Placed "${item.label}" in ${target==='HOME'?'Home':'Auto'}.`+(currentDragItem()?'':` All ${DRAG_ITEMS.length} items are placed.`); }
+    function undoLastPlacement(){ if(!state.started || state.result) return; const id=state.dragHistory.pop(); if(id===undefined) return; const item=DRAG_ITEMS.find(x=>x.id===id); delete state.dragPlacements[id]; state.placeLockUntil=0; renderDrag(); renderProgress(); el.lastPlaced.textContent=item?`Undid placement of "${item.label}". Place it again.`:''; }
+    async function ensureJsPDF(){ if(window.jspdf && window.jspdf.jsPDF) return true; const sources=['https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js','https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js','https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js']; for(const src of sources){ try{ await new Promise((resolve,reject)=>{ const s=document.createElement('script'); s.src=src; s.onload=resolve; s.onerror=reject; document.head.appendChild(s);}); if(window.jspdf && window.jspdf.jsPDF) return true; }catch(e){} } return false; }
+    async function imageToDataUrl(src){ return new Promise((resolve,reject)=>{ const img=new Image(); img.crossOrigin='anonymous'; img.onload=()=>{ try{ const canvas=document.createElement('canvas'); canvas.width=img.naturalWidth; canvas.height=img.naturalHeight; canvas.getContext('2d').drawImage(img,0,0); resolve(canvas.toDataURL('image/png')); }catch(err){ reject(err); } }; img.onerror=reject; img.src=src; }); }
+
+    async function sendViaEmailJS(result, wasAutoSubmitted){
+      if(!EMAILJS_CONFIG.enabled || !EMAILJS_CONFIG.publicKey || !EMAILJS_CONFIG.serviceId || !EMAILJS_CONFIG.templateId || !window.emailjs) return {ok:false, reason:'emailjs-not-configured'};
+      try{
+        emailjs.init({ publicKey: EMAILJS_CONFIG.publicKey });
+        const params = {
+          email_subject: `LAVA Farmers Exam Result - ${result.name} - ${result.percentage}%`,
+          candidate_name: result.name,
+          agency: result.agency || 'LAVA Training Batch',
+          trainer_name: result.trainer,
+          score: String(result.percentage),
+          passed: result.passed ? 'Passed':'Failed',
+          objective_correct: `${result.objectiveCorrect}/${result.questionTotal}`,
+          drag_correct: `${result.dragCorrect}/${DRAG_ITEMS.length}`,
+          take_number: String(result.takeNumber),
+          certificate_number: result.certificateNumber,
+          submitted_at: new Date().toLocaleString(),
+          to_email: 'leo@lavaautomation.com, jonas@lavaautomation.com, au@lavaautomation.com, alchanie@lavaautomation.com'
+        };
+        await emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, params);
+        return {ok:true, mode:'emailjs'};
+      }catch(error){ console.error('EmailJS error:', error); return {ok:false, reason:'emailjs-failed'}; }
+    }
+    async function sendResultSubmission(result, wasAutoSubmitted){
+      const emailJsResult = await sendViaEmailJS(result, wasAutoSubmitted);
+      if(emailJsResult.ok) return emailJsResult;
+      const form=document.getElementById('netlifyExamForm'); if(!form) return {ok:false, reason:'missing-form'};
+      const usedSeconds=EXAM_DURATION - Math.max(0,state.secondsLeft);
+      const summary=[`Candidate: ${result.name}`,`Agency: ${result.agency || 'LAVA Training Batch'}`,`Trainer: ${result.trainer}`,`Score: ${result.percentage}%`,`Status: ${result.passed ? 'Passed':'Failed'}`,`Take Number: ${result.takeNumber}`,`Objective Score: ${result.objectiveCorrect}/${result.questionTotal}`,`Drag Score: ${result.dragCorrect}/${DRAG_ITEMS.length}`,`Certificate No: ${result.certificateNumber}`,`Auto Submitted: ${wasAutoSubmitted ? 'Yes':'No'}`,`Submitted At: ${new Date().toLocaleString()}`].join('\n');
+      form.querySelector('[name="subject"]').value=`LAVA Farmers Exam Result - ${result.name} - ${result.percentage}%`;
+      form.querySelector('[name="candidate_name"]').value=result.name;
+      form.querySelector('[name="agency"]').value=result.agency || 'LAVA Training Batch';
+      form.querySelector('[name="trainer_name"]').value=result.trainer;
+      form.querySelector('[name="score"]').value=String(result.percentage);
+      form.querySelector('[name="passed"]').value=result.passed ? 'Passed':'Failed';
+      form.querySelector('[name="objective_correct"]').value=`${result.objectiveCorrect}/${result.questionTotal}`;
+      form.querySelector('[name="drag_correct"]').value=`${result.dragCorrect}/${DRAG_ITEMS.length}`;
+      form.querySelector('[name="take_number"]').value=String(result.takeNumber);
+      form.querySelector('[name="certificate_number"]').value=result.certificateNumber;
+      form.querySelector('[name="submitted_at"]').value=new Date().toLocaleString();
+      form.querySelector('[name="duration_used"]').value=formatTime(usedSeconds);
+      form.querySelector('[name="result_summary"]').value=summary;
+      const formData=new FormData(form);
+      try{ const response = await fetch('/', { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body:new URLSearchParams(formData).toString() }); if(!response.ok) throw new Error('Submission failed'); return {ok:true, mode:'netlify'}; }catch(error){ console.error('Netlify form submission error:',error); return {ok:false, reason:'network'}; }
+    }
+
+    function startExam(){ const name=el.candidateName.value.trim(); if(!name){ showMessage('Please enter the trainee name first.'); return; } const attempts=getAttemptsForName(name); if(attempts >= MAX_TAKES){ updateAttemptsUI(); showMessage('This trainee already used all 3 allowed takes for this browser.'); return; } if(state.orderConsumed){ prepareAttemptOrder(); state.answers={}; state.dragPlacements={}; state.dragHistory=[]; } const nextTake=attempts+1; setAttemptsForName(name, nextTake); state.orderConsumed=true; state.currentTake=nextTake; state.started=true; state.result=null; renderQuestions(); renderDrag(); renderProgress(); renderResult(); renderCertificate(null); updateAttemptsUI(); updateButtons(); startTimer(); showMessage(`Take ${nextTake} started. Remaining attempts after this take: ${MAX_TAKES - nextTake}.`); }
+    function resetCurrentForm(newShuffle=false){ clearTimer(); state.started=false; state.currentTake=0; state.secondsLeft=EXAM_DURATION; updateTimer(); if(newShuffle){ buildExam(); } else { state.answers={}; state.dragPlacements={}; state.dragHistory=[]; state.result=null; state.autoDownloaded=false; state.adminUnlocked=false; renderQuestions(); renderDrag(); renderProgress(); renderResult(); renderCertificate(null); closeAdminModal(); hideMessage(); updateButtons(); } updateAttemptsUI(); }
+    function openAdminModal(){ el.adminError.classList.add('hidden'); el.adminError.textContent=''; el.adminPasswordInput.value=''; el.adminModal.classList.remove('hidden'); el.adminPasswordInput.focus(); }
+    function closeAdminModal(){ el.adminModal.classList.add('hidden'); }
+    function unlockAdmin(){ const entered=el.adminPasswordInput.value; if(entered !== ADMIN_PASSWORD){ el.adminError.textContent='Incorrect admin password.'; el.adminError.classList.remove('hidden'); return; } state.adminUnlocked=true; closeAdminModal(); renderResult(); renderCertificate(state.result); updateButtons(); showMessage('Admin review unlocked.'); }
+
+    async function submitExam(isAuto=false){ if(state.result) return; if(!state.started){ showMessage('Please start the exam first.'); return; } const missingQuestions=state.questions.filter(q=>!state.answers[q.id]).length; const missingDrag=DRAG_ITEMS.filter(item=>!state.dragPlacements[item.id]).length; if(!isAuto && (missingQuestions > 0 || missingDrag > 0)){ showMessage(`Please finish all items first. Remaining: ${missingQuestions} question(s) and ${missingDrag} drag item(s).`); return; } clearTimer(); state.started=false; const objectiveCorrect=state.questions.filter(q=>state.answers[q.id]===q.answer).length; const dragCorrect=DRAG_ITEMS.filter(item=>state.dragPlacements[item.id]===item.answer).length; const totalCorrect=objectiveCorrect + dragCorrect; const totalItems=state.questions.length + DRAG_ITEMS.length; const percentage=Math.round((totalCorrect/totalItems)*100); const passed=percentage >= PASSING_SCORE; const name=el.candidateName.value.trim(); const agency=el.agencyName.value.trim(); const trainer=el.trainerName.value.trim() || 'LAVA Training Department'; const allQuestions=state.questions.map((q,idx)=>({...q,displayNumber:idx+1,userAnswer:state.answers[q.id] || ''})); const missedQuestions=allQuestions.filter(q=>q.userAnswer !== q.answer); const allDrag=state.dragOrder.map((item,idx)=>({...item,displayNumber:idx+1,userPlacement:state.dragPlacements[item.id] || ''})); const missedDrag=allDrag.filter(item=>item.userPlacement !== item.answer); state.result={name,agency,trainer,percentage,passed,objectiveCorrect,dragCorrect,takeNumber:state.currentTake,date:new Date().toLocaleDateString(),certificateNumber:'LAVA-FIO-'+Date.now().toString().slice(-8),submittedAt:new Date().toLocaleString(),usedSeconds:EXAM_DURATION-Math.max(0,state.secondsLeft),autoSubmitted:!!isAuto,answeredCount:answeredCount(),placedCount:placedCount(),questionTotal:state.questions.length,missedQuestions,missedDrag,allQuestions,allDrag}; state.adminUnlocked=false; renderQuestions(); renderDrag(); renderProgress(); renderResult(); renderCertificate(state.result); updateButtons(); updateAttemptsUI(); el.completionCard.scrollIntoView({behavior: reduceMotion.matches?'auto':'smooth', block:'start'}); const heading=document.getElementById('completionHeading'); if(heading) heading.focus({preventScroll:true}); const attempts=getAttemptsForName(name); const remaining=Math.max(0, MAX_TAKES - attempts); const emailResult=await sendResultSubmission(state.result, isAuto); const emailNote=emailResult.ok ? (emailResult.mode==='emailjs' ? ' A branded email was sent to the admin inboxes.' : ' A copy of the score was sent through the Netlify notification workflow.') : ' Email delivery will work after this file is deployed on Netlify with form detection and email notifications enabled, or after EmailJS is configured.'; showMessage((isAuto ? 'Time is up. The exam was auto-submitted.\n':'' ) + `Exam submitted successfully. Admin password is required to view the result, correct answers, and certificate. Remaining take(s): ${remaining}.` + emailNote); }
+
+    async function downloadCertificate(result){ if(!result) return; const loaded=await ensureJsPDF(); if(!loaded){ showMessage('PDF library could not be loaded. Please check your internet connection or deploy the file on Netlify. The certificate preview still works.'); return; } try{ const { jsPDF } = window.jspdf; const doc=new jsPDF({orientation:'landscape', unit:'pt', format:'a4'}); const w=doc.internal.pageSize.getWidth(); const h=doc.internal.pageSize.getHeight(); let bgData=null, logoData=null; try{ bgData=await imageToDataUrl('images/certificate-bg.png'); }catch(e){} try{ logoData=await imageToDataUrl('images/logo.png'); }catch(e){}
+      if(bgData){ doc.addImage(bgData,'PNG',0,0,w,h); } else { doc.setFillColor(244,240,231); doc.rect(0,0,w,h,'F'); }
+      doc.setDrawColor(107,33,33); doc.setLineWidth(2); doc.rect(18,18,w-36,h-36); doc.setLineWidth(1); doc.rect(32,32,w-64,h-64);
+      if(logoData) doc.addImage(logoData,'PNG',w/2-34,44,68,68);
+      doc.setFont('times','bold'); doc.setTextColor(17,17,17); doc.setFontSize(30); doc.text('Certificate of Completion', w/2, 145, {align:'center'});
+      doc.setFont('times','italic'); doc.setTextColor(123,29,29); doc.setFontSize(18); doc.text('Farmers Insurance Training & Operations Final Examination', w/2, 170, {align:'center'});
+      doc.setFont('helvetica','bold'); doc.setTextColor(123,29,29); doc.setFontSize(12); doc.text('THIS CERTIFICATE IS PROUDLY PRESENTED TO', w/2, 215, {align:'center'});
+      doc.setTextColor(23,23,23); doc.setFont('times','bold'); doc.setFontSize(28); doc.text((result.name||'').toUpperCase(), w/2, 260, {align:'center'}); doc.setDrawColor(46,46,46); doc.line(140,270,w-140,270);
+      doc.setTextColor(90,16,16); doc.setFont('times','normal'); doc.setFontSize(16); doc.text('for successfully passing the Farmers Insurance Training & Operations Final Examination and demonstrating proficiency in the LAVA Farmers Insurance training program.', w/2, 315, {align:'center', maxWidth:560});
+      doc.setFont('helvetica','bold'); doc.setTextColor(17,17,17); doc.setFontSize(12); doc.text(`Certificate No: ${result.certificateNumber}`, 95, 390); doc.text(`Agency: ${result.agency || 'LAVA Training Batch'}`, 95, 414); doc.text(`Date Issued: ${result.date}`, 95, 438); doc.text(`Score: ${result.percentage}%`, w-235, 390); doc.text(`Take Number: ${result.takeNumber}`, w-235, 414); doc.text(`Trainer: ${result.trainer}`, w-235, 438);
+      doc.line(w/2-120, 500, w/2+120, 500); doc.setTextColor(123,17,17); doc.setFont('times','bold'); doc.setFontSize(16); doc.text(result.trainer.toUpperCase(), w/2, 520, {align:'center'}); doc.setFontSize(11); doc.text(CERTIFICATE_TRAINER_TITLE.toUpperCase(), w/2, 538, {align:'center'});
+      doc.save((result.name || 'trainee').replace(/\s+/g,'_') + '_LAVA_Farmers_Insurance_Final_Exam_Certificate.pdf');
+    }catch(err){ showMessage('Certificate preview is ready, but PDF generation failed. The on-page certificate still works.'); console.error(err); } }
+
+    el.shuffleBtn.addEventListener('click',()=>{ if(state.started) return; buildExam(); showMessage('Questions were shuffled. The displayed numbering follows proper counting order.'); updateAttemptsUI(); });
+    el.startBtn.addEventListener('click', startExam);
+    el.resetBtn.addEventListener('click', ()=>{ resetCurrentForm(false); showMessage('The current form was reset. Your attempt count was not changed.'); });
+    el.submitBtn.addEventListener('click', ()=>submitExam(false));
+    el.nextTakeBtn.addEventListener('click', ()=>{ resetCurrentForm(true); showMessage('Next take is prepared. Click Start Exam when ready.'); });
+    el.adminAccessBtn.addEventListener('click', openAdminModal);
+    el.adminUnlockBtn.addEventListener('click', unlockAdmin);
+    el.adminCancelBtn.addEventListener('click', closeAdminModal);
+    el.adminPasswordInput.addEventListener('keydown', e=>{ if(e.key==='Enter') unlockAdmin(); });
+    el.downloadCertificateBtn.addEventListener('click', ()=>downloadCertificate(state.result));
+    el.placeHomeBtn.addEventListener('click', ()=>placeCurrentItem('HOME'));
+    el.placeAutoBtn.addEventListener('click', ()=>placeCurrentItem('AUTO'));
+    [el.homeZone, el.autoZone].forEach(zone=>{ zone.addEventListener('dragover',e=>{ if(!state.started || state.result) return; e.preventDefault(); }); zone.addEventListener('dragenter',()=>{ if(state.started && !state.result) zone.classList.add('over'); }); zone.addEventListener('dragleave',e=>{ if(!zone.contains(e.relatedTarget)) zone.classList.remove('over'); }); zone.addEventListener('drop',e=>{ if(!state.started || state.result) return; e.preventDefault(); const target=zone.id==='homeZone'?'HOME':'AUTO'; const droppedId=e.dataTransfer ? e.dataTransfer.getData('text/plain') : ''; placeCurrentItem(target, droppedId || undefined); activateZones(false); zone.classList.remove('active','over'); });
+      zone.addEventListener('click',()=>{ placeCurrentItem(zone.id==='homeZone'?'HOME':'AUTO'); });
+      zone.addEventListener('keydown',e=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); placeCurrentItem(zone.id==='homeZone'?'HOME':'AUTO'); } }); });
+    el.candidateName.addEventListener('input', updateAttemptsUI);
+    function jumpTo(target, focusEl){ if(!target) return; target.scrollIntoView({behavior: reduceMotion.matches?'auto':'smooth', block:'start'}); if(focusEl) setTimeout(()=>focusEl.focus({preventScroll:true}), reduceMotion.matches?0:350); }
+    function jumpToNextUnanswered(){ const q=state.questions.find(x=>!state.answers[x.id]); if(q){ const card=document.getElementById('qcard-'+q.id); if(!card) return; card.scrollIntoView({behavior: reduceMotion.matches?'auto':'smooth', block:'center'}); card.classList.add('is-target'); setTimeout(()=>card.classList.remove('is-target'),1600); const sel=card.querySelector('select'); if(sel && !sel.disabled) setTimeout(()=>sel.focus({preventScroll:true}), reduceMotion.matches?0:350); return; }
+      if(currentDragItem()){ jumpTo(document.getElementById('sectionDrag'), el.dragItemWrap.querySelector('.drag-card')); return; } jumpTo(el.sectionSubmit, el.submitBtn.disabled?null:el.submitBtn); }
+    document.querySelectorAll('[data-jump]').forEach(btn=>btn.addEventListener('click',()=>{ const id=btn.getAttribute('data-jump'); const target=document.getElementById(id); const focusEl = id==='sectionSubmit' ? el.submitBtn : (id==='sectionDrag' ? el.dragItemWrap.querySelector('.drag-card') : null); jumpTo(target, focusEl); }));
+    el.jumpNextBtn.addEventListener('click', jumpToNextUnanswered);
+    el.undoPlaceBtn.addEventListener('click', undoLastPlacement);
+    window.addEventListener('beforeunload', e=>{ if(state.started && !state.result){ e.preventDefault(); e.returnValue=''; } });
+    document.addEventListener('visibilitychange', ()=>{ if(!document.hidden && state.timerId) tickTimer(); });
+    window.addEventListener('resize', renderExamBar);
+
+    buildExam(); updateTimer(); updateAttemptsUI(); updateButtons();
+  </script>
+</body>
+</html>
